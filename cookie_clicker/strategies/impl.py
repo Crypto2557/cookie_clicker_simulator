@@ -1,24 +1,8 @@
-def strategy_cursor(cookies, cps, time_left, build_info):
-    """Always pick Cursor!
+"""Here you find strategies, that are more comprehensive"""
+from cookie_clicker.utils.decorators import register_strategy
 
-    Note that this simplistic strategy does not properly check whether
-    it can actually buy a Cursor in the time left.  Your strategy
-    functions must do this and return None rather than an item you
-    can't buy in the time left.
-    """
-    return "Cursor"
-
-
-def strategy_none(cookies, cps, time_left, building_info):
-    """Always returns None!
-
-    This is a pointless strategy that you can use to help debug
-    your simulate_clicker function.
-    """
-    return None
-
-
-def strategy_cheap(cookies, cps, time_left, building_info):
+@register_strategy(skip=False)
+def cheap(cookies, cps, time_left, building_info):
     """This strategy buys always the cheapest item."""
     item_list = building_info.buildings
 
@@ -32,7 +16,8 @@ def strategy_cheap(cookies, cps, time_left, building_info):
         return None
 
 
-def strategy_expensive(cookies, cps, time_left, building_info):
+@register_strategy(skip=False)
+def expensive(cookies, cps, time_left, building_info):
     """This strategy buys always the most expensive item."""
     item_list = building_info.buildings
 
@@ -46,7 +31,8 @@ def strategy_expensive(cookies, cps, time_left, building_info):
     return None
 
 
-def strategy_monster(cookies, cps, time_left, building_info):
+@register_strategy(skip=False)
+def monster(cookies, cps, time_left, building_info):
 
     def payback_period(cost: float, cookies_in_bank: float, cps: float,
                        cps_building: float) -> float:

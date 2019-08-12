@@ -3,6 +3,7 @@ from typing import Callable, List
 
 from cookie_clicker.building_info import BuildingInfo
 from cookie_clicker.clicker_state import ClickerState
+from cookie_clicker import strategies
 
 
 class Simulator:
@@ -52,9 +53,14 @@ class Simulator:
 
         return clicker_state
 
-    def run_strategies(self, strategies: List[Callable]) -> List[ClickerState]:
+    def run_strategies(self, run_all=False) -> List[ClickerState]:
         clicker_states = []
-        for strategy in strategies:
+        if run_all:
+            strategy_list = strategies.all_strategies
+        else:
+            strategy_list = strategies.active
+
+        for strategy in strategy_list:
             clicker_states.append((strategy.__name__, self.run_strategy(strategy)))
         return clicker_states
 
