@@ -1,9 +1,9 @@
 from prettytable import PrettyTable
 from tabulate import tabulate
-
 from typing import Callable, List
-from buildingInfo import BuildingInfo
-from clickerState import ClickerState
+
+from cookie_clicker.building_info import BuildingInfo
+from cookie_clicker.clicker_state import ClickerState
 
 
 class Simulator:
