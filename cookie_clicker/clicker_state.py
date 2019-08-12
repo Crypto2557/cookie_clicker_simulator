@@ -16,7 +16,7 @@ class ClickerState:
         # - The cost of the item
         # - The total number of cookies produced by that time
 
-        self._history = [(0.0, None, 0.0, 0.0)]
+        self._history = [(0.0, "", 0.0, 0.0)]
 
     def __str__(self) -> str:
         """Returns human readable state."""
@@ -29,23 +29,23 @@ class ClickerState:
     @property
     def current_cookies(self) -> float:
         return self._current_cookies
-    
+
     @property
     def cps(self) -> float:
         return self._cps
-    
+
     @property
     def current_time(self) -> float:
         return self._current_time
-    
+
     @property
     def total_cookies(self) -> float:
         return self._total_cookies
-    
+
     @property
     def history(self) -> List[Tuple[float, str, float, float]]:
         return self._history
-    
+
     def time_until(self, cookies: float) -> float:
         """Returns time until you have the given number of cookies.
 

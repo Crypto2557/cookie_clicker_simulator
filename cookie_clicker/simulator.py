@@ -1,5 +1,5 @@
 from tabulate import tabulate
-from typing import Callable, List
+from typing import Callable, List, Type, Tuple
 
 from cookie_clicker.building_info import BuildingInfo
 from cookie_clicker.clicker_state import ClickerState
@@ -12,7 +12,7 @@ class Simulator:
     duration and a strategy.
     """
 
-    def __init__(self, building_info: BuildingInfo,
+    def __init__(self, building_info: Type[BuildingInfo],
                  duration: float = 1e10) -> None:
 
         self.building_info = building_info
@@ -53,7 +53,7 @@ class Simulator:
 
         return clicker_state
 
-    def run_strategies(self, run_all=False) -> List[ClickerState]:
+    def run_strategies(self, run_all: bool = False) -> List[Tuple[str, ClickerState]]:
         clicker_states = []
         if run_all:
             strategy_list = strategies.all_strategies
@@ -64,7 +64,7 @@ class Simulator:
             clicker_states.append((strategy.__name__, self.run_strategy(strategy)))
         return clicker_states
 
-    def print_comparison(self, clicker_states):
+    def print_comparison(self, clicker_states: List[Tuple[str, ClickerState]]) -> None:
         headers = ['#', 'Strategy', 'All Time', 'Current', 'CPS']
         tablerows = []
         for i, (name, clicker_state) in enumerate(clicker_states):
