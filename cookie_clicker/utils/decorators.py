@@ -1,14 +1,23 @@
-from typing import Callable, List
+from typing import Callable
 
-from cookie_clicker.strategies import active, all_strategies
+from cookie_clicker import strategies
 
-def register_strategy(skip=False):
-    global active, all_strategies
+def register_strategy(skip: bool = False) -> Callable:
+    """Registers a function as strategy.
 
-    def wrapper(func: Callable):
-        all_strategies.append(func)
+    You can defined, whether this strategy should be skipped
+    in default execution.
+
+    Passing --all_strategies/-a command line argument will
+    force to execute the skipped strategies.
+    """
+
+    def wrapper(func: Callable) -> Callable:
+
+        strategies.all_strategies.append(func)
         if not skip:
-            active.append(func)
+            strategies.active.append(func)
+
         return func
 
     return wrapper
