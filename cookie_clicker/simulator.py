@@ -55,15 +55,16 @@ class Simulator:
     def run_strategies(self, strategies: List[Callable]) -> List[ClickerState]:
         clicker_states = []
         for strategy in strategies:
-            clicker_states.append(self.run_strategy(strategy))
+            clicker_states.append((strategy.__name__, self.run_strategy(strategy)))
         return clicker_states
 
     def print_comparison(self, clicker_states):
-        headers = ['Strategy', 'All Time', 'Current', 'CPS']
+        headers = ['#', 'Strategy', 'All Time', 'Current', 'CPS']
         tablerows = []
-        for i, clicker_state in enumerate(clicker_states):
+        for i, (name, clicker_state) in enumerate(clicker_states):
             tablerows.append([
                 i,
+                name,
                 clicker_state.total_cookies,
                 clicker_state.current_cookies,
                 clicker_state.cps
