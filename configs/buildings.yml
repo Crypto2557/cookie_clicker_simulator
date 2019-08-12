@@ -1,0 +1,63 @@
+Cursor:
+    cost: 1.5e+01
+    cps: 0.1e+00
+
+Grandma:
+    cost: 1.0e+02
+    cps: 1.0e+00
+
+Farm:
+    cost: 1.1e+03
+    cps: 8.0e+00
+
+Mine:
+    cost: 1.2e+04
+    cps: 4.7e+01
+
+Factory:
+    cost: 1.3e+05
+    cps: 2.6e+02
+
+Bank:
+    cost: 1.4e+06
+    cps: 1.4e+03
+
+Temple:
+    cost: 2.0e+07
+    cps: 7.8e+03
+
+Wizard Tower:
+    cost: 3.3e+08
+    cps: 4.4e+04
+
+Shipment:
+    cost: 5.1e+09
+    cps: 2.6e+05
+
+Alchemy Lab:
+    cost: 7.5e+10
+    cps: 1.6e+06
+
+Portal:
+    cost: 1.0e+12
+    cps: 1.0e+07
+
+Time Machine:
+    cost: 1.4e+13
+    cps: 6.5e+07
+
+Antimatter Condenser:
+    cost: 1.7e+14
+    cps: 4.3e+08
+
+Prism:
+    cost: 2.1e+15
+    cps: 2.9e+09
+
+Chancemaker:
+    cost: 2.6e+16
+    cps: 2.1e+10
+
+Fractal Engine:
+    cost: 3.1e+17
+    cps: 1.5e+11

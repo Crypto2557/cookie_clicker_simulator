@@ -7,21 +7,21 @@ from cookie_clicker import strategies
 
 
 class Simulator:
-    """ Simluates a Cookie Clicker game.
+    """ Simulates a Cookie Clicker game.
     Calculates the outcome of a game given a
     duration and a strategy.
     """
 
-    def __init__(self, building_info: Type[BuildingInfo],
+    def __init__(self, building_info: str,
                  duration: float = 1e10) -> None:
 
-        self.building_info = building_info
+        self.building_info = BuildingInfo(building_info)
         self.duration = duration
 
     def run_strategy(self, strategy: Callable) -> ClickerState:
         """Runs a simulation with one strategy."""
         clicker_state = ClickerState()
-        building_info = self.building_info()
+        building_info = self.building_info.clone()
 
         while clicker_state.current_time <= self.duration:
             item_to_buy = strategy(

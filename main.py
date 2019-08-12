@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 import argparse
 
-from cookie_clicker.building_info import BuildingInfo
 from cookie_clicker.simulator import Simulator
+from cookie_clicker.utils import Config
 
 def main(args):
     """Runs the simulator."""
-    simulator = Simulator(building_info=BuildingInfo, duration=args.duration)
+    simulator = Simulator(building_info=args.building_info,
+                          duration=args.duration)
+
     clicker_states = simulator.run_strategies(args.all_strategies)
     simulator.print_comparison(clicker_states)
 
@@ -17,6 +19,12 @@ if __name__ == '__main__':
                         type=float,
                         help='Duration of the simulation.',
                         default=1e10)
+
+    parser.add_argument('--building_info',
+                        '-b',
+                        type=str,
+                        help='Config file about the buildings.',
+                        default=Config.DEFAULT_BUILDING_INFO)
 
     parser.add_argument('--all_strategies',
                         '-a',
