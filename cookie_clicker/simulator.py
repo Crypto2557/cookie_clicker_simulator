@@ -1,4 +1,3 @@
-from prettytable import PrettyTable
 from tabulate import tabulate
 from typing import Callable, List
 
