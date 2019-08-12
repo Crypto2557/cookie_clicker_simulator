@@ -20,11 +20,11 @@ class ClickerState:
 
     def __str__(self) -> str:
         """Returns human readable state."""
-        return (
-            f"Time elapsed: {self._current_time:0.1e}\n" +
-            f"Cookies baked (all time): {self._total_cookies:0.3e}\n" +
-            f"Cookies in bank: {self._current_cookies:0.3e}\n" +
-            f"Cookies per second: {self._cps:0.3e}\n")
+        return "\n".join([
+            f"Time elapsed: {self._current_time:0.1e}",
+            f"Cookies baked (all time): {self._total_cookies:0.3e}",
+            f"Cookies in bank: {self._current_cookies:0.3e}",
+            f"Cookies per second: {self._cps:0.3e}"]) + "\n"
 
     @property
     def current_cookies(self) -> float:
