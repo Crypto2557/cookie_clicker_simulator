@@ -21,11 +21,17 @@ def get_shopping_list_strategy_from_file(shopping_list_path: str) -> Callable:
 
 
 def get_shopping_list_strategy_from_list(purchases: List[str]) -> Callable:
-    purchases = purchases.copy()
+    purchases_inner = purchases.copy()
+    purchases_current = []
 
     def shopping_list_inner(cookies, cps, time_left, building_info) -> Union[str, None]:
-        if len(purchases) > 0:
-            purchase = purchases.pop(0)
+        """ Manage stateful stuff :/ """
+        nonlocal purchases_current
+        if cookies == 15 and cps == 0:
+            purchases_current = purchases_inner.copy()
+
+        if len(purchases_current) > 0:
+            purchase = purchases_current.pop(0)
             if purchase == 'None':
                 return None
             else:
