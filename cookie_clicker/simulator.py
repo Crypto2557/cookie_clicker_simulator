@@ -32,9 +32,13 @@ class Simulator:
             if item_to_buy is None:
                 break
 
-            elapsed = clicker_state.time_until(
-                building_info.get_cost(item_to_buy)
-            )  # Determine how much time must elapse until it is possible to purchase the item.
+            try:
+                elapsed = clicker_state.time_until(
+                    building_info.get_cost(item_to_buy)
+                )  # Determine how much time must elapse until it is possible to purchase the item.
+            except ZeroDivisionError:
+                print('Impossible purchase made!')
+                break
 
             if clicker_state.current_time + elapsed > self.duration:
                 break
@@ -54,7 +58,7 @@ class Simulator:
 
         return clicker_state
 
-    def run_strategies(self, run_all: bool = False) -> List[Tuple[str, ClickerState]]:
+    def run_strategies(self, run_all: bool = False, print_results: bool = False) -> List[Tuple[str, ClickerState]]:
         clicker_states = []
         if run_all:
             strategy_list = strategies.all_strategies
@@ -62,8 +66,9 @@ class Simulator:
             strategy_list = strategies.active
 
         for strategy in strategy_list:
-            clicker_states.append((strategy.__name__, self.run_strategy(strategy)))
+            clicker_states.append((strategy.__name__, self.run_strategy(strategy, print_results)))
         return clicker_states
+
 
     def print_comparison(self, clicker_states: List[Tuple[str, ClickerState]]) -> None:
         headers = ['#', 'Strategy', 'All Time', 'Current', 'CPS']

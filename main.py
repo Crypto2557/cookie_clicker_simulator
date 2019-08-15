@@ -1,16 +1,41 @@
 #!/usr/bin/env python
 import argparse
+from tabulate import tabulate
 
 from cookie_clicker.simulator import Simulator
 from cookie_clicker.utils import Config
+from cookie_clicker import competitions
+
+
+def run_challenge(building_info: str, run_all_strategies: bool = False, run_all_competitions: bool = True):
+    competition_list = competitions.all_competitions if run_all_competitions else competitions.active
+
+    results = {}
+    for criterion, duration, _ in competition_list:
+        clicker_states = Simulator(building_info=building_info, duration=duration).run_strategies(run_all_strategies, False)
+        results[criterion.__name__] = {name: criterion(clicker_state) for name, clicker_state in clicker_states}
+
+    return results
+
+
+def print_challenge_results(results):
+    strategy_names = list(results[list(results.keys())[0]].keys())
+    competition_names = list(results.keys())
+
+    header = ['Strategy \\ Competition'] + competition_names
+    tablerows = []
+    for strategy_name in strategy_names:
+        tablerow = [strategy_name] + \
+                   [results[competition_name][strategy_name] for competition_name in competition_names]
+        tablerows += [tablerow]
+
+    print(tabulate(tablerows, headers=tuple(header), tablefmt='fancy_grid', numalign='center'))
+
 
 def main(args):
-    """Runs the simulator."""
-    simulator = Simulator(building_info=args.building_info,
-                          duration=args.duration)
+    results = run_challenge(args.building_info, args.all_strategies, args.all_competitions)
+    print_challenge_results(results)
 
-    clicker_states = simulator.run_strategies(args.all_strategies)
-    simulator.print_comparison(clicker_states)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Cookie Clicker Simulation')
@@ -31,5 +56,9 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Do not ignore skipped strategies.')
 
-    args = parser.parse_args()
-    main(args)
+    parser.add_argument('--all_competitions',
+                        '-c',
+                        action='store_true',
+                        help='Do not ignore skipped competitions.')
+
+    main(parser.parse_args())
