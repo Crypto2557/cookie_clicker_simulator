@@ -18,7 +18,7 @@ class Simulator:
         self.building_info = BuildingInfo(building_info)
         self.duration = duration
 
-    def run_strategy(self, strategy: Callable) -> ClickerState:
+    def run_strategy(self, strategy: Callable, print_results: bool = True) -> ClickerState:
         """Runs a simulation with one strategy."""
         clicker_state = ClickerState()
         building_info = self.building_info.clone()
@@ -49,7 +49,8 @@ class Simulator:
 
         clicker_state.wait(self.duration - clicker_state.current_time)
 
-        print(clicker_state)
+        if print_results:
+            print(clicker_state)
 
         return clicker_state
 
