@@ -27,15 +27,35 @@ def print_challenge_results(results):
     for strategy_name in strategy_names:
         tablerow = [strategy_name]
         for competition_name in competition_names:
+
             res = results[competition_name][strategy_name]
+            # Check if this result is the best result
+            _, _, bigger_is_better = competitions.all_competitions[
+                [func.__name__ for func, _, _ in competitions.all_competitions].index(competition_name)]
+
+
+            is_best_result = True
+            for comp_strategy_name in strategy_names:
+                comp_res = results[competition_name][comp_strategy_name]
+                if comp_res > res and bigger_is_better:
+                    is_best_result = False
+                    break
+                if comp_res < res and not bigger_is_better:
+                    is_best_result = False
+                    break
+
             if competition_name.startswith('time_to') and res == competitions.FOREVER:
                 disp_val = '-'
             else:
                 disp_val = '%.3e' % res
+
+            if is_best_result:
+                disp_val = '** %s **' % disp_val
+
             tablerow += [disp_val]
         tablerows += [tablerow]
 
-    print(tabulate(tablerows, headers=tuple(header), tablefmt='fancy_grid', numalign='center'))
+    print(tabulate(tablerows, headers=tuple(header), tablefmt='fancy_grid', numalign='center', stralign='center'))
 
 
 def main(args):
