@@ -43,7 +43,7 @@ def get_shopping_list_strategy_from_list(purchases: List[str]) -> Callable:
 
 
 """ Register lists """
-for item in pathlib.Path("shopping_lists").iterdir():
+for item in sorted(pathlib.Path("shopping_lists").iterdir()):
     strategy = get_shopping_list_strategy_from_file(str(item))
     strategy.__name__ = item.name
     register_strategy(skip=False)(strategy)
