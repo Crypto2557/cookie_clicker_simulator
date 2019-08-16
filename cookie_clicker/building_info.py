@@ -16,6 +16,7 @@ class BuildingInfo:
 
         if isinstance(building_info,  str):
             self._buildings = read_config_file(building_info)
+            [values.update({'count': 0}) for k, values in self._buildings.items()]
 
         elif isinstance(building_info, dict):
             self._buildings = copy.deepcopy(building_info)
@@ -27,9 +28,14 @@ class BuildingInfo:
     def buildings(self) -> List[str]:
         return list(self._buildings.keys())
 
-    def get_cost(self, building: str) -> float:
+    def get_initial_cost(self, building: str) -> float:
         """Gets the current cost of an building."""
         return self._buildings[building]['cost']
+
+    def get_cost(self, building: str) -> float:
+        """Gets the current cost of an building."""
+        building = self._buildings[building]
+        return building['cost'] * self._build_growth**building['count']
 
     def get_cps(self, building: str) -> float:
         """Gets the current CPS of an building."""
@@ -37,8 +43,8 @@ class BuildingInfo:
 
     def update_building(self, building: str) -> None:
         """Updates the cost of an building by the growth factor."""
-        cost, cps = self._buildings[building].values()
-        self._buildings[building]["cost"] *= self._build_growth
+        cost, cps, count = self._buildings[building].values()
+        self._buildings[building]['count'] += 1
 
     def clone(self) -> BuildingInfo:
         """Returns a clone of this BuildInfo."""

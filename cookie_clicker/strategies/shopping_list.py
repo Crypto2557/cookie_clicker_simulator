@@ -22,7 +22,7 @@ def get_shopping_list_strategy_from_file(shopping_list_path: str) -> Callable:
 
 def get_shopping_list_strategy_from_list(purchases: List[str]) -> Callable:
     purchases_inner = purchases.copy()
-    purchases_current = []
+    purchases_current : list = []
 
     def shopping_list_inner(cookies, cps, time_left, building_info) -> Union[str, None]:
         """ Manage stateful stuff :/ """
