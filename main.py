@@ -25,8 +25,14 @@ def print_challenge_results(results):
     header = ['Strategy \\ Competition'] + competition_names
     tablerows = []
     for strategy_name in strategy_names:
-        tablerow = [strategy_name] + \
-                   [results[competition_name][strategy_name] for competition_name in competition_names]
+        tablerow = [strategy_name]
+        for competition_name in competition_names:
+            res = results[competition_name][strategy_name]
+            if competition_name.startswith('time_to') and res == competitions.FOREVER:
+                disp_val = '-'
+            else:
+                disp_val = '%.3e' % res
+            tablerow += [disp_val]
         tablerows += [tablerow]
 
     print(tabulate(tablerows, headers=tuple(header), tablefmt='fancy_grid', numalign='center'))
