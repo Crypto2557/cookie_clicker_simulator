@@ -15,7 +15,10 @@ def time_to_revenue(clicker_state: ClickerState):
     for timestep, _, _, revenue in clicker_state.history:
         if revenue > 1e42:
             return timestep
-    return FOREVER
+    if clicker_state.cps > 0:
+        return ((1e42 - clicker_state.total_cookies) / clicker_state.cps) + clicker_state.current_time
+    else:
+        return FOREVER
 
 
 @register_competition(skip=False)
