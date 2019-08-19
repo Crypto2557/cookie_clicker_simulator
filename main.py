@@ -7,12 +7,13 @@ from cookie_clicker.utils import Config
 from cookie_clicker import competitions
 
 
-def run_challenge(building_info: str, run_all_strategies: bool = False, run_all_competitions: bool = True):
+def run_challenge(building_info: str, strategy: str = None, run_all_strategies: bool = False, run_all_competitions: bool = True):
     competition_list = competitions.all_competitions if run_all_competitions else competitions.active
 
     results = {}
     for criterion, duration, _ in competition_list:
-        clicker_states = Simulator(building_info=building_info, duration=duration).run_strategies(run_all_strategies, False)
+        simulator = Simulator(building_info=building_info, duration=duration)
+        clicker_states = simulator.run_strategies(strategy, run_all_strategies, False)
         results[criterion.__name__] = {name: criterion(clicker_state) for name, clicker_state in clicker_states}
 
     return results
@@ -59,7 +60,7 @@ def print_challenge_results(results):
 
 
 def main(args):
-    results = run_challenge(args.building_info, args.all_strategies, args.all_competitions)
+    results = run_challenge(args.building_info, args.strategy, args.all_strategies, args.all_competitions)
     print_challenge_results(results)
 
 
@@ -81,6 +82,11 @@ if __name__ == '__main__':
                         '-a',
                         action='store_true',
                         help='Do not ignore skipped strategies.')
+
+    parser.add_argument('--strategy',
+                        '-s',
+                        type=str,
+                        help='Execute only this one strategy.')
 
     parser.add_argument('--all_competitions',
                         '-c',

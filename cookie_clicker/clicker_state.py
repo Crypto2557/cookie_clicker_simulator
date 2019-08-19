@@ -67,6 +67,7 @@ class ClickerState:
     def buy_item(self, item_name: str, cost: float,
                  additional_cps: float) -> None:
         """Buys an item and update state."""
+
         if self._current_cookies >= cost:
             self._current_cookies -= cost
             self._cps += additional_cps

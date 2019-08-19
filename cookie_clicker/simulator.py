@@ -58,10 +58,19 @@ class Simulator:
 
         return clicker_state
 
-    def run_strategies(self, run_all: bool = False, print_results: bool = False) -> List[Tuple[str, ClickerState]]:
+    def run_strategies(self, strategy: str = None, run_all: bool = False, print_results: bool = False) -> List[Tuple[str, ClickerState]]:
         clicker_states = []
-        if run_all:
+
+        if strategy is not None:
+            strat_dict = {strat.__name__: strat for strat in strategies.all_strategies}
+            assert strategy in strat_dict, \
+                f"Could not find strategy \"{strategy}\" in the strategy registry!"
+
+            strategy_list = [strat_dict[strategy]]
+
+        elif run_all:
             strategy_list = strategies.all_strategies
+
         else:
             strategy_list = strategies.active
 
