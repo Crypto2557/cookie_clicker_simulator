@@ -15,3 +15,4 @@ def read_config_file(fpath: str) -> dict:
 
 class Config(abc.ABC):
     DEFAULT_BUILDING_INFO: str = "configs/buildings.yml"
+    DEFAULT_SHOPPING_LISTS_FOLDER: str = "shopping_lists"

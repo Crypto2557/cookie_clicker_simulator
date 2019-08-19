@@ -2,6 +2,7 @@
 import pathlib
 from typing import List, Callable, Union
 from cookie_clicker.utils.decorators import register_strategy
+from cookie_clicker.utils import Config
 
 
 def load_purchases_file(shopping_list_path: str) -> List[str]:
@@ -43,7 +44,7 @@ def get_shopping_list_strategy_from_list(purchases: List[str]) -> Callable:
 
 
 """ Register lists """
-for item in sorted(pathlib.Path("shopping_lists").iterdir()):
+for item in sorted(pathlib.Path(Config.DEFAULT_SHOPPING_LISTS_FOLDER).iterdir()):
     strategy = get_shopping_list_strategy_from_file(str(item))
     strategy.__name__ = item.name
     register_strategy(skip=False)(strategy)
