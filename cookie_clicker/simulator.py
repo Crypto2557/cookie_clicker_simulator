@@ -23,6 +23,9 @@ class Simulator:
         clicker_state = ClickerState()
         building_info = self.building_info.clone()
 
+        if hasattr(strategy, "reset"):
+            strategy.reset()
+
         while clicker_state.current_time <= self.duration:
             item_to_buy = strategy(
                 clicker_state.current_cookies, clicker_state.cps,
@@ -31,7 +34,6 @@ class Simulator:
 
             if item_to_buy is None:
                 break
-
             try:
                 elapsed = clicker_state.time_until(
                     building_info.get_cost(item_to_buy)
