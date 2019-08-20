@@ -1,4 +1,7 @@
 from typing import Callable
+from decimal import Decimal
+
+D = Decimal
 
 
 def register_strategy(skip: bool = False) -> Callable:
@@ -23,7 +26,7 @@ def register_strategy(skip: bool = False) -> Callable:
     return wrapper
 
 
-def register_competition(skip: bool = False, duration: float = 1e10, bigger_is_better: bool = True) -> Callable:
+def register_competition(skip: bool = False, duration: Decimal = D(1e10), bigger_is_better: bool = True) -> Callable:
     """Registers a function as competition.
 
     You can define whether this competition should be skipped

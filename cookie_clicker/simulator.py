@@ -4,7 +4,6 @@ from decimal import Decimal
 
 D = Decimal
 
-from cookie_clicker.building_info import BuildingInfo
 from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.buildings import BuildingFactory
 from cookie_clicker import strategies
@@ -17,7 +16,7 @@ class Simulator:
     """
 
     def __init__(self, building_info: Union[str, Dict[str, Dict[str, float]]],
-                 duration: Decimal = 1e10) -> None:
+                 duration: Decimal = D(1e10)) -> None:
 
         self.building_info = building_info
         self.duration = D(duration)
@@ -80,8 +79,8 @@ class Simulator:
         else:
             strategy_list = strategies.active
 
-        for strategy in strategy_list:
-            clicker_states.append((strategy.__name__, self.run_strategy(strategy, print_results)))
+        for strat in strategy_list:
+            clicker_states.append((strat.__name__, self.run_strategy(strat, print_results)))
         return clicker_states
 
 

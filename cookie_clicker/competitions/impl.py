@@ -4,17 +4,17 @@ import math
 from decimal import Decimal
 D = Decimal
 
-from cookie_clicker.utils.decorators import *
+from cookie_clicker.utils.decorators import register_competition
+from cookie_clicker.buildings import BuildingFactory
 from cookie_clicker.clicker_state import ClickerState
-import cookie_clicker.building_info as building_info
-import cookie_clicker.utils as utils
+from cookie_clicker.utils import Config
 
 
-FOREVER = math.sqrt(sys.float_info.max)
+FOREVER = D(math.sqrt(sys.float_info.max))
 
 
 @register_competition(skip=False, bigger_is_better=False, duration=D(10e28))
-def time_to_revenue(clicker_state: ClickerState, target: Decimal = D(1e42)):
+def time_to_revenue(clicker_state: ClickerState, target: Decimal = D(1e42)) -> Decimal:
     target = D(target)
     for timestep, _, _, revenue in clicker_state.history:
         if revenue > target:
@@ -40,10 +40,10 @@ def cps_at_timestep(clicker_state: ClickerState) -> Decimal:
     return clicker_state.cps
 
 
-@register_competition(skip=False, bigger_is_better=False, duration=10e20)
-def time_to_mathematician(clicker_state: ClickerState) -> float:
-    my_building_info = building_info.BuildingInfo(utils.Config.DEFAULT_BUILDING_INFO)
-    pairs = sorted([(building, my_building_info.get_cost(building=building)) for building in my_building_info.buildings], key=lambda x: x[1], reverse=True)
+@register_competition(skip=False, bigger_is_better=False, duration=D(10e20))
+def time_to_mathematician(clicker_state: ClickerState) -> Decimal:
+    factory = BuildingFactory(Config.DEFAULT_BUILDING_INFO)
+    pairs = sorted([(building_name, factory[building_name].cost) for building_name in factory], key=lambda x: x[1], reverse=True)
     required_counts = {building: min(128, int(math.pow(2.0, i))) for i, (building, _) in enumerate(pairs)}
 
     for timestep, item_name, _, _ in clicker_state.history:

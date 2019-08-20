@@ -6,21 +6,21 @@ import math
 from typing import Callable, List, Type, Tuple, Union, Dict
 from dataclasses import dataclass, field
 from decimal import Decimal
+D = Decimal
 
 
 from cookie_clicker.utils import Config
 from cookie_clicker.clicker_state import ClickerState
 
-D = Decimal
 
 class BuildingFactory(object):
 
     def __init__(self,
         building_info: Union[str, Dict[str, Dict[str, float]]],
-        growth_factor=1.15) -> None:
+        growth_factor: Decimal = D(1.15)) -> None:
         super(BuildingFactory, self).__init__()
 
-        self._built_buildings = {}
+        self._built_buildings: Dict[str, Building] = {}
         self.growth_factor = D(str(growth_factor))
         self.state = ClickerState()
 
@@ -42,21 +42,21 @@ class BuildingFactory(object):
 
         if building_name not in self._built_buildings:
             _info = self._buildings[building_name]
-            kwargs = dict(
+
+            self._built_buildings[building_name] = Building(
                 factory=self,
                 name=building_name,
                 initial_cost=D(str(_info["cost"])),
                 initial_cps=D(str(_info["cps"])),
                 count=0
             )
-            self._built_buildings[building_name] = Building(**kwargs)
 
         return self._built_buildings[building_name]
 
     def __iter__(self):
         return iter(self.buildings)
 
-    def build(self, building_name: str) -> Building:
+    def build(self, building_name: str) -> Union[Building, None]:
         if building_name not in self._buildings:
             return None
 
@@ -75,8 +75,8 @@ class Building:
     name: str
     initial_cost: Decimal
     initial_cps: Decimal
+    factory: BuildingFactory = field(repr=False)
     count: int = 0
-    factory: BuildingFactory = field(repr=False, default=None)
 
     @property
     def cost(self):
