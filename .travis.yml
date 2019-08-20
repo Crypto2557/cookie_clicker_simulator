@@ -16,3 +16,5 @@ install:
 
 script:
   - make run_tests
+  - make typecheck
+  - make run
