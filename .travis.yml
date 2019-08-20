@@ -14,5 +14,5 @@ install:
   - conda env create -n cookie_clicker -f environment.yml
   - source activate cookie_clicker
 
-scripts:
+script:
   - make run_tests
