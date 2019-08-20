@@ -4,7 +4,7 @@ import copy
 import math
 
 from typing import Callable, List, Type, Tuple, Union, Dict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from cookie_clicker.utils import Config
 from cookie_clicker.clicker_state import ClickerState
@@ -40,7 +40,8 @@ class BuildingFactory(object):
                 factory=self,
                 name=building_name,
                 initial_cost=_info["cost"],
-                initial_cps=_info["cps"]
+                initial_cps=_info["cps"],
+                count=0
             )
             self._built_buildings[building_name] = Building(**kwargs)
 
@@ -51,27 +52,26 @@ class BuildingFactory(object):
             return None
 
         building = self[building_name]
-        building.count += 1
-
         self.state.buy(building)
 
+        building.count += 1
         return building
 
     def time_until(self, building_name: str) -> float:
         building = self[building_name]
-        return self.state.time_until(building.cost)
+        return self.state.time_until(building)
 
 @dataclass
 class Building:
-    factory: BuildingFactory
     name: str
     initial_cost: float
     initial_cps: float
     count: int = 0
+    factory: BuildingFactory = field(repr=False, default=None)
 
     @property
     def cost(self):
-        return math.ceil(self.initial_cost * self.factory.growth_factor**(self.count-1))
+        return math.ceil(self.initial_cost * self.factory.growth_factor**self.count)
 
     @property
     def cps(self):

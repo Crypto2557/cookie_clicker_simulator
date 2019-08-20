@@ -55,7 +55,7 @@ class BuildingTest(BaseFactoryTest):
 
     def test_first_build(self):
 
-        building = self.factory.build("Cursor")
+        building = self.factory["Cursor"]
 
         self.assertIsNotNone(building, "BuildingFactory.build should return something")
         self.assertIsInstance(building, Building)
@@ -63,11 +63,13 @@ class BuildingTest(BaseFactoryTest):
         self.assertEqual(building.name, "Cursor")
         self.assertEqual(building.cost, self.building_info["Cursor"]["cost"])
         self.assertEqual(building.cps, self.building_info["Cursor"]["cps"])
+
+        self.factory.build("Cursor")
         self.assertEqual(building.count, 1)
 
     def test_build_multiple(self):
         building0 = self.factory.build("Cursor")
-        building1 = self.factory.build("Cursor")
+        building1 = self.factory["Cursor"]
 
         self.assertIs(building0, building1, "Should be the same building instance!")
 
@@ -78,6 +80,7 @@ class BuildingTest(BaseFactoryTest):
         self.assertEqual(building1.cps, self.building_info["Cursor"]["cps"],
             "CPS must be the same after another build!")
 
+        building1 = self.factory.build("Cursor")
         self.assertEqual(building1.count, 2)
 
 
@@ -115,7 +118,7 @@ class StateTest(BaseFactoryTest):
         self.assertEqual(self.factory.state.current_cookies, 15,
             "Initial cookies should be 15!")
 
-        self.factory.build("Cursor")
+        building = self.factory.build("Cursor")
 
         self.assertEqual(self.factory.state.current_cookies, 0,
             f"Cookies after one Cursor should be 0!")
@@ -127,14 +130,14 @@ class StateTest(BaseFactoryTest):
         self.assertEqual(t, 0, "Time for the first cursor should be 0!")
 
     def test_time_for_next_cursor(self):
-        self.factory.build("Cursor")
+        b = self.factory.build("Cursor")
 
         t = self.factory.time_until("Cursor")
-        cost = self.building_info["Cursor"]["cost"]
-        cps = self.building_info["Cursor"]["cps"]
+        cost = b.cost
+        cps = self.factory.state.cps
 
         t_should = cost / cps
-        self.assertEqual(t, 0,
+        self.assertEqual(t, t_should,
             f"Time for the second cursor should be {t_should}!")
 
 

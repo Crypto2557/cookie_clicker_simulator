@@ -47,36 +47,46 @@ class ClickerState:
     def history(self) -> List[Tuple[float, str, float, float]]:
         return self._history
 
-    def time_until(self, cookies: float) -> float:
+    def time_until(self, building) -> float:
         """Returns time until you have the given number of cookies.
 
         Could be 0 if you already have enough cookies.
         Should return a float with no fractional part.
         """
-        if cookies - self._current_cookies > 0:
-            return math.ceil((cookies - self._current_cookies) / self._cps)
+
+        cookie_diff = building.cost - self._current_cookies
+        if cookie_diff > 0:
+            return math.ceil(cookie_diff / self._cps)
         else:
             return 0.0
 
-    def wait(self, time: float) -> None:
+    def wait(self, building) -> None:
         """Waits for the given amount of time and updates state."""
-        if time > 0:
-            self._current_time += time
-            self._current_cookies += (time * self._cps)
-            self._total_cookies += (time * self._cps)
+        time = self.time_until(building)
+        if time <= 0:
+            return
+
+        self._current_time += time
+        self._current_cookies += (time * self._cps)
+        self._total_cookies += (time * self._cps)
 
     def buy(self, building) -> None:
-        """Buys a building and update state."""
+        """Waits until the building is buildable,
+        Buys a building by updating the state."""
+
+        self.wait(building)
+
+        assert self._current_cookies >= building.cost, \
+            f"Cannot buy this building: {building}, because the cost " + \
+            f"({building.cost}) are greater than current cookies ({self._current_cookies})"
 
         self._cps += building.cps
         self._current_cookies -= building.cost
 
-    # def buy(self, item_name: str, cost: float,
-    #              additional_cps: float) -> None:
-    #     """Buys an item and update state."""
+        self._history.append((
+            self._current_time,
+            building.name,
+            building.cost,
+            self._total_cookies
+        ))
 
-    #     if self._current_cookies >= cost:
-    #         self._current_cookies -= cost
-    #         self._cps += additional_cps
-    #         self._history.append((self._current_time, item_name, cost,
-    #                               self._total_cookies))
