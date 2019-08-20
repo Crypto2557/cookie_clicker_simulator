@@ -1,7 +1,10 @@
-from .base import CursorStrategy, NoneStrategy
-from .impl import CheapStrategy, ExpensiveStrategy, MonsterStrategy
-from .from_vec import StrategyFromVec
-from .shopping_list import ShoppingListStrategy
+from cookie_clicker.strategies.base import CursorStrategy
+from cookie_clicker.strategies.base import NoneStrategy
+from cookie_clicker.strategies.impl import CheapStrategy
+from cookie_clicker.strategies.impl import ExpensiveStrategy
+from cookie_clicker.strategies.impl import MonsterStrategy
+from cookie_clicker.strategies.from_vec import StrategyFromVec
+from cookie_clicker.strategies.shopping_list import ShoppingListStrategy
 
 CursorStrategy()
 NoneStrategy()

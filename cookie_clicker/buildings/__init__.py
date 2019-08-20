@@ -1,1 +1,1 @@
-from .factory import BuildingFactory, Building
+from cookie_clicker.buildings.factory import BuildingFactory, Building
