@@ -1,6 +1,7 @@
 import math
 from typing import List, Tuple
 
+# from cookie_clicker.buildings import Building
 
 class ClickerState:
     """Simple class to keep track of the game state."""
@@ -64,12 +65,18 @@ class ClickerState:
             self._current_cookies += (time * self._cps)
             self._total_cookies += (time * self._cps)
 
-    def buy_item(self, item_name: str, cost: float,
-                 additional_cps: float) -> None:
-        """Buys an item and update state."""
+    def buy(self, building) -> None:
+        """Buys a building and update state."""
 
-        if self._current_cookies >= cost:
-            self._current_cookies -= cost
-            self._cps += additional_cps
-            self._history.append((self._current_time, item_name, cost,
-                                  self._total_cookies))
+        self._cps += building.cps
+        self._current_cookies -= building.cost
+
+    # def buy(self, item_name: str, cost: float,
+    #              additional_cps: float) -> None:
+    #     """Buys an item and update state."""
+
+    #     if self._current_cookies >= cost:
+    #         self._current_cookies -= cost
+    #         self._cps += additional_cps
+    #         self._history.append((self._current_time, item_name, cost,
+    #                               self._total_cookies))

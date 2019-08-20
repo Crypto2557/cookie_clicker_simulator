@@ -1,8 +1,8 @@
 from tabulate import tabulate
-from typing import Callable, List, Type, Tuple
+from typing import Callable, List, Type, Tuple, Union
 
 from cookie_clicker.building_info import BuildingInfo
-from cookie_clicker.clicker_state import ClickerState
+from cookie_clicker.buildings import BuildingFactory
 from cookie_clicker import strategies
 
 
@@ -12,16 +12,23 @@ class Simulator:
     duration and a strategy.
     """
 
-    def __init__(self, building_info: str,
+    def __init__(self, building_info: Union[str, Dict[str, Dict[str, float]]],
                  duration: float = 1e10) -> None:
 
-        self.building_info = BuildingInfo(building_info)
+        self.building_info = building_info
         self.duration = duration
+
+    def new_factory(self):
+        return BuildingFactory(self.building_info)
 
     def run_strategy(self, strategy: Callable, print_results: bool = True) -> ClickerState:
         """Runs a simulation with one strategy."""
-        clicker_state = ClickerState()
-        building_info = self.building_info.clone()
+
+        factory = self.new_factory()
+        clicker_state = factory.state
+
+        # clicker_state = ClickerState()
+        # building_info = self.building_info.clone()
 
         if hasattr(strategy, "reset"):
             strategy.reset()
@@ -34,10 +41,10 @@ class Simulator:
 
             if item_to_buy is None:
                 break
+
             try:
-                elapsed = clicker_state.time_until(
-                    building_info.get_cost(item_to_buy)
-                )  # Determine how much time must elapse until it is possible to purchase the item.
+                elapsed = factory.time_until(item_to_buy)
+                # Determine how much time must elapse until it is possible to purchase the item.
             except ZeroDivisionError:
                 print('Impossible purchase made!')
                 break
