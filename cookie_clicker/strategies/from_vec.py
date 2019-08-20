@@ -80,27 +80,3 @@ register_strategy(skip=False)(StrategiefromVec({
     "Chancemaker"           : 8,
     "Fractal Engine"        : 3
 }))
-
-sfm2 = StrategiefromVec({
-
-    "Cursor"                : 128-1,
-    "Grandma"               : 128,
-    "Farm"                  : 128,
-    "Mine"                  : 128,
-    "Factory"               : 128,
-    "Bank"                  : 128,
-    "Temple"                : 128,
-    "Wizard Tower"          : 128,
-    "Shipment"              : 128,
-    "Alchemy Lab"           : 64,
-    "Portal"                : 44,
-    "Time Machine"          : 31,
-    "Antimatter Condenser"  : 18,
-    "Prism"                 : 12,
-    "Chancemaker"           : 8,
-    "Fractal Engine"        : 3
-})
-
-sfm2.__name__ += "1"
-
-register_strategy(skip=False)(sfm2)
