@@ -1,3 +1,9 @@
+# CookieClicker Simulator
+master branch: [![Build Status](https://travis-ci.com/Crypto2557/cookie_clicker_simulator.svg?branch=master)](https://travis-ci.com/Crypto2557/cookie_clicker_simulator)
+dev branch: [![Build Status](https://travis-ci.com/Crypto2557/cookie_clicker_simulator.svg?branch=dev)](https://travis-ci.com/Crypto2557/cookie_clicker_simulator)
+
+## Leaderboards
+
 ### Leaderboard "Current Cookies"
 
 | Cookies  |Buildings |   Name   |
