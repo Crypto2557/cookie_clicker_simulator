@@ -8,7 +8,6 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 D = Decimal
 
-
 from cookie_clicker.utils import Config
 from cookie_clicker.clicker_state import ClickerState
 
@@ -79,10 +78,10 @@ class Building:
     count: int = 0
 
     @property
-    def cost(self):
-        return math.ceil(self.initial_cost * self.factory.growth_factor**self.count)
+    def cost(self) -> Decimal:
+        return D(math.ceil(self.initial_cost * self.factory.growth_factor**self.count))
 
     @property
-    def cps(self):
+    def cps(self) -> Decimal:
         return self.initial_cps
 

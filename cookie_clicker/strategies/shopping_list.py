@@ -1,10 +1,12 @@
 """ Shopping List strategy """
 from pathlib import Path
 from os.path import basename
-from typing import List, Callable, Union
-from cookie_clicker.utils import Config
+from decimal import Decimal
+from typing import List, Callable, Union, Optional
 
-from .base import BaseStrategy
+from cookie_clicker.utils import Config
+from cookie_clicker.strategies.base import BaseStrategy
+from cookie_clicker.buildings import BuildingFactory
 
 class ShoppingListStrategy(BaseStrategy):
 
@@ -19,14 +21,14 @@ class ShoppingListStrategy(BaseStrategy):
         with open(shopping_list_path, 'w') as shopping_list:
             shopping_list.write('\n'.join(purchases) + '\n')
 
-    def __init__(self, shopping_list_path: str):
+    def __init__(self, shopping_list_path: str) -> None:
         name = basename(shopping_list_path)
         super(ShoppingListStrategy, self).__init__(name=name)
 
         self.purchases = ShoppingListStrategy.load(shopping_list_path)
         self.purchases_current: List[str] = []
 
-    def __call__(self, cookies, cps, time_left, building_info):
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
 
         if cookies == 15 and cps == 0:
             self.purchases_current = self.purchases.copy()

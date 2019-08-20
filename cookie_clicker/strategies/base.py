@@ -1,9 +1,12 @@
 import abc
+from typing import Optional
+from decimal import Decimal
 from cookie_clicker.utils import Registry
+from cookie_clicker.buildings.factory import BuildingFactory
 
 class BaseStrategy(abc.ABC):
 
-    def __init__(self, name: str = None, skip: bool = False):
+    def __init__(self, name: str = None, skip: bool = False) -> None:
         super(BaseStrategy, self).__init__()
         self.name: str = name or self.__class__.__name__
         self.skip = skip
@@ -11,10 +14,10 @@ class BaseStrategy(abc.ABC):
         Registry.register_strategy(self)
 
     @abc.abstractmethod
-    def __call__(self, *args, **kwargs):
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
         raise NotImplementedError
 
-    def reset(self):
+    def reset(self) -> None:
         """Don't do anything in the default case"""
         pass
 
@@ -27,10 +30,10 @@ class CursorStrategy(BaseStrategy):
     functions must do this and return None rather than an item you
     can't buy in the time left.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         super(CursorStrategy, self).__init__(name="Cursor", skip=True)
 
-    def __call__(self, cookies, cps, time_left, factory):
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> str:
         return "Cursor"
 
 
@@ -41,8 +44,8 @@ class NoneStrategy(BaseStrategy):
     your simulate_clicker function.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(NoneStrategy, self).__init__(name="None", skip=True)
 
-    def __call__(self, cookies, cps, time_left, factory):
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> None:
         return None

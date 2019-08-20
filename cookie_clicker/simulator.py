@@ -1,5 +1,6 @@
+from __future__ import annotations
 from tabulate import tabulate
-from typing import Callable, List, Type, Tuple, Union, Dict
+from typing import List, Tuple, Union, Dict
 from decimal import Decimal
 
 D = Decimal
@@ -22,19 +23,19 @@ class Simulator:
         self.building_info = building_info
         self.duration = D(duration)
 
-    def new_factory(self):
+    def new_factory(self) -> BuildingFactory:
         return BuildingFactory(self.building_info)
 
     @property
-    def state(self):
+    def state(self) -> ClickerState:
         return self.factory.state
 
-    def reset(self, strategy: BaseStrategy):
+    def reset(self, strategy: BaseStrategy) -> None:
         self.factory = self.new_factory()
         strategy.reset()
 
     @property
-    def ready(self):
+    def ready(self) -> bool:
         return self.state.current_time > self.duration
 
     def run_strategy(self, strategy: BaseStrategy, print_results: bool = True) -> ClickerState:
@@ -74,21 +75,3 @@ class Simulator:
             clicker_states.append((strat.name, self.run_strategy(strat, print_results)))
 
         return clicker_states
-
-
-    def print_comparison(self, clicker_states: List[Tuple[str, ClickerState]]) -> None:
-        headers = ['#', 'Strategy', 'All Time', 'Current', 'CPS']
-        tablerows = []
-        for i, (name, clicker_state) in enumerate(clicker_states):
-            tablerows.append([
-                i,
-                name,
-                clicker_state.total_cookies,
-                clicker_state.current_cookies,
-                clicker_state.cps
-            ])
-        table = tabulate(tablerows,
-                         headers,
-                         tablefmt='fancy_grid',
-                         numalign='center')
-        print(table)

@@ -1,8 +1,7 @@
 import math
-from typing import List, Tuple
-
-from decimal import Decimal
 from dataclasses import dataclass, field
+from typing import List, Tuple, Any
+from decimal import Decimal
 
 D = Decimal
 
@@ -33,7 +32,7 @@ class ClickerState:
             f"Cookies per second: {self.cps:0.3e}"]) + "\n"
 
 
-    def time_until(self, building) -> Decimal:
+    def time_until(self, building: Any) -> Decimal:
         """Returns time until you have the given number of cookies.
 
         Could be 0 if you already have enough cookies.
@@ -46,15 +45,15 @@ class ClickerState:
         else:
             return D(0)
 
-    def wait_for_building(self, building) -> None:
+    def wait_for_building(self, building: Any) -> None:
         """Waits for the given amount of time and updates state
         based on the building.
         """
         time = self.time_until(building)
         # print(f"Waiting {time} to build {building.name} ({building.count})")
-        return self.wait(time)
+        self.wait(time)
 
-    def wait(self, time: D) -> None:
+    def wait(self, time: Decimal) -> None:
         """Waits for the given amount of time and updates state."""
         if time <= 0:
             return
@@ -63,7 +62,7 @@ class ClickerState:
         self.current_cookies += (time * self.cps)
         self.total_cookies += (time * self.cps)
 
-    def buy(self, building) -> None:
+    def buy(self, building: Any) -> None:
         """Waits until the building is buildable,
         Buys a building by updating the state."""
 

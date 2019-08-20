@@ -1,5 +1,10 @@
-from .base import BaseStrategy
 import copy
+from typing import Optional, Dict
+from decimal import Decimal
+D = Decimal
+
+from cookie_clicker.strategies.base import BaseStrategy
+from cookie_clicker.buildings.factory import BuildingFactory
 
 class StrategyFromVec(BaseStrategy):
     __default_dic = {
@@ -21,15 +26,15 @@ class StrategyFromVec(BaseStrategy):
             "Fractal Engine"        : 1
             }
 
-    def __init__(self, dic=None, name: str = "irgendwas"):
+    def __init__(self, dic: Optional[Dict[str, int]] = None, name: str = "irgendwas") -> None:
         super(StrategyFromVec, self).__init__(name=name)
         self.init_dic = dic or StrategyFromVec.__default_dic
         self.reset()
 
-    def __call__(self, cookies, cps, time_left, factory):
-        def payback_period(cost: float, cookies_in_bank: float, cps: float,
-                                 cps_building: float) -> float:
-            return max(cost - cookies / cps, 0) / cps + cost / cps_building
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
+        def payback_period(cost: Decimal, cookies_in_bank: Decimal, cps: Decimal,
+                                 cps_building: Decimal) -> Decimal:
+            return D(str(max(cost - cookies_in_bank / cps, 0))) / cps + cost / cps_building
 
         if cps == 0.0:
             return 'Cursor'
@@ -52,5 +57,5 @@ class StrategyFromVec(BaseStrategy):
                 return best_option
         return None
 
-    def reset(self):
+    def reset(self) -> None:
         self.dic = copy.deepcopy(self.init_dic)

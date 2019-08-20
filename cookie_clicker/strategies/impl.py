@@ -1,6 +1,10 @@
 """Here you find strategies, that are more comprehensive"""
+from typing import Optional
 from decimal import Decimal
-from .base import BaseStrategy
+D = Decimal
+
+from cookie_clicker.strategies.base import BaseStrategy
+from cookie_clicker.buildings.factory import BuildingFactory
 
 class CheapStrategy(BaseStrategy):
     """This strategy buys always the cheapest item."""
@@ -19,10 +23,10 @@ class CheapStrategy(BaseStrategy):
 
 class ExpensiveStrategy(BaseStrategy):
     """This strategy buys always the most expensive item."""
-    def __init__(self):
+    def __init__(self) -> None:
         super(ExpensiveStrategy, self).__init__(name="expensive")
 
-    def __call__(self, cookies, cps, time_left, factory):
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
         costs = [(factory[building].cost, building) for building in factory]
         costs.sort(key=lambda tup: tup[0], reverse=True)
 
@@ -35,11 +39,11 @@ class MonsterStrategy(BaseStrategy):
     def __init__(self):
         super(MonsterStrategy, self).__init__(name="Monster")
 
-    def __call__(self, cookies, cps, time_left, factory):
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
 
         def payback_period(cost: Decimal, cookies_in_bank: Decimal, cps: Decimal,
                            cps_building: Decimal) -> Decimal:
-            return max(cost - cookies / cps, 0) / cps + cost / cps_building
+            return D(str(max(cost - cookies_in_bank / cps, 0))) / cps + cost / cps_building
 
         if cps == 0.0:
             return 'Cursor'
