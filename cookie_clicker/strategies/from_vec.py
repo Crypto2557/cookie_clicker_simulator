@@ -1,10 +1,7 @@
-from cookie_clicker.utils.decorators import register_strategy
-
+from .base import BaseStrategy
 import copy
 
-class StrategiefromVec:
-    __name__ = 'irgendwas'
-
+class StrategyFromVec(BaseStrategy):
     __default_dic = {
             "Cursor"                : 127,
             "Grandma"               : 128,
@@ -24,11 +21,10 @@ class StrategiefromVec:
             "Fractal Engine"        : 1
             }
 
-    def __init__(self, dic=None):
-
-        self.init_dic = dic or StrategiefromVec.__default_dic
+    def __init__(self, dic=None, name: str = "irgendwas"):
+        super(StrategyFromVec, self).__init__(name=name)
+        self.init_dic = dic or StrategyFromVec.__default_dic
         self.reset()
-
 
     def __call__(self, cookies, cps, time_left, factory):
         def payback_period(cost: float, cookies_in_bank: float, cps: float,
@@ -58,25 +54,3 @@ class StrategiefromVec:
 
     def reset(self):
         self.dic = copy.deepcopy(self.init_dic)
-
-
-
-register_strategy(skip=False)(StrategiefromVec({
-
-    "Cursor"                : 145-1,
-    "Grandma"               : 128,
-    "Farm"                  : 128,
-    "Mine"                  : 128,
-    "Factory"               : 128,
-    "Bank"                  : 128,
-    "Temple"                : 128,
-    "Wizard Tower"          : 128,
-    "Shipment"              : 128,
-    "Alchemy Lab"           : 64,
-    "Portal"                : 44,
-    "Time Machine"          : 31,
-    "Antimatter Condenser"  : 18,
-    "Prism"                 : 12,
-    "Chancemaker"           : 8,
-    "Fractal Engine"        : 3
-}))

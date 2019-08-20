@@ -6,7 +6,8 @@ D = Decimal
 
 from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.buildings import BuildingFactory
-from cookie_clicker import strategies
+from cookie_clicker.utils import Registry
+from cookie_clicker.strategies.base import BaseStrategy
 
 
 class Simulator:
@@ -28,17 +29,15 @@ class Simulator:
     def state(self):
         return self.factory.state
 
-    def reset(self, strategy: Callable):
+    def reset(self, strategy: BaseStrategy):
         self.factory = self.new_factory()
-
-        if hasattr(strategy, "reset"):
-            strategy.reset()
+        strategy.reset()
 
     @property
     def ready(self):
         return self.state.current_time > self.duration
 
-    def run_strategy(self, strategy: Callable, print_results: bool = True) -> ClickerState:
+    def run_strategy(self, strategy: BaseStrategy, print_results: bool = True) -> ClickerState:
         """Runs a simulation with one strategy."""
 
         self.reset(strategy)
@@ -67,20 +66,13 @@ class Simulator:
         clicker_states = []
 
         if strategy is not None:
-            strat_dict = {strat.__name__: strat for strat in strategies.all_strategies}
-            assert strategy in strat_dict, \
-                f"Could not find strategy \"{strategy}\" in the strategy registry!"
-
-            strategy_list = [strat_dict[strategy]]
-
-        elif run_all:
-            strategy_list = strategies.all_strategies
-
+            strategy_list = Registry.get_strategies(strategy)
         else:
-            strategy_list = strategies.active
+            strategy_list = Registry.strategies(active_only=not run_all)
 
         for strat in strategy_list:
-            clicker_states.append((strat.__name__, self.run_strategy(strat, print_results)))
+            clicker_states.append((strat.name, self.run_strategy(strat, print_results)))
+
         return clicker_states
 
 
