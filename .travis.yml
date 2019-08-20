@@ -12,7 +12,7 @@ before_install:
 
 install:
   - conda env create -n cookie_clicker -f environment.yml
-  - conda activate cookie_clicker
+  - source activate cookie_clicker
 
 scripts:
   - make run_tests
