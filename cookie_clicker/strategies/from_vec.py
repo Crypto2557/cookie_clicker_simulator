@@ -30,7 +30,7 @@ class StrategiefromVec:
         self.reset()
 
 
-    def __call__(self, cookies, cps, time_left, building_info):
+    def __call__(self, cookies, cps, time_left, factory):
         def payback_period(cost: float, cookies_in_bank: float, cps: float,
                                  cps_building: float) -> float:
             return max(cost - cookies / cps, 0) / cps + cost / cps_building
@@ -38,16 +38,16 @@ class StrategiefromVec:
         if cps == 0.0:
             return 'Cursor'
 
-        item_strings = building_info.buildings
         payback_period_per_item = []
 
-        for item in item_strings:
+        for building_name in factory:
+            building = factory[building_name]
             payback_period_per_item.append(
-                (item,
-                payback_period(cost=building_info.get_cost(item),
+                (building_name,
+                payback_period(cost=building.cost,
                                 cookies_in_bank=cookies,
                                 cps=cps,
-                                cps_building=building_info.get_cps(item))))
+                                cps_building=building.cps)))
 
         payback_period_per_item.sort(key=lambda tup: tup[1])
         for best_option, *others in payback_period_per_item:

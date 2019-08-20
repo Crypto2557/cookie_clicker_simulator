@@ -1,6 +1,9 @@
 import sys
 import math
 
+from decimal import Decimal
+D = Decimal
+
 from cookie_clicker.utils.decorators import *
 from cookie_clicker.clicker_state import ClickerState
 import cookie_clicker.building_info as building_info
@@ -10,29 +13,30 @@ import cookie_clicker.utils as utils
 FOREVER = math.sqrt(sys.float_info.max)
 
 
-@register_competition(skip=False, bigger_is_better=False, duration=10e28)
-def time_to_revenue(clicker_state: ClickerState):
+@register_competition(skip=False, bigger_is_better=False, duration=D(10e28))
+def time_to_revenue(clicker_state: ClickerState, target: Decimal = D(1e42)):
+    target = D(target)
     for timestep, _, _, revenue in clicker_state.history:
-        if revenue > 1e42:
+        if revenue > target:
             return timestep
     if clicker_state.cps > 0:
-        return ((1e42 - clicker_state.total_cookies) / clicker_state.cps) + clicker_state.current_time
+        return ((target - clicker_state.total_cookies) / clicker_state.cps) + clicker_state.current_time
     else:
         return FOREVER
 
 
 @register_competition(skip=False)
-def profit_at_timestep(clicker_state: ClickerState) -> float:
+def profit_at_timestep(clicker_state: ClickerState) -> Decimal:
     return clicker_state.current_cookies
 
 
 @register_competition(skip=False)
-def revenue_at_timestep(clicker_state: ClickerState) -> float:
+def revenue_at_timestep(clicker_state: ClickerState) -> Decimal:
     return clicker_state.total_cookies
 
 
 @register_competition(skip=False)
-def cps_at_timestep(clicker_state: ClickerState) -> float:
+def cps_at_timestep(clicker_state: ClickerState) -> Decimal:
     return clicker_state.cps
 
 
