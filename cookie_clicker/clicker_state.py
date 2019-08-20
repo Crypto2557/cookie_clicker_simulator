@@ -43,8 +43,7 @@ class ClickerState:
 
         cookie_diff = building.cost - self.current_cookies
         if cookie_diff > 0:
-            time = math.ceil(cookie_diff / self.cps)
-            return time
+            return D(math.ceil(cookie_diff / self.cps))
         else:
             return D(0)
 

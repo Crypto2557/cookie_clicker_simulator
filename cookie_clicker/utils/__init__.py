@@ -21,6 +21,8 @@ class Config(abc.ABC):
     DEFAULT_BUILDING_INFO: str = "configs/buildings.yml"
     DEFAULT_SHOPPING_LISTS_FOLDER: str = "shopping_lists"
 
+    MAX_PRECISION: int = 54
+
     @staticmethod
     def load(fpath: str) -> Any:
         with open(fpath, "r") as f:
