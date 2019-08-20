@@ -1,92 +1,88 @@
 import math
+import numpy as np
 from typing import List, Tuple
 
-# from cookie_clicker.buildings import Building
+from decimal import Decimal
+from dataclasses import dataclass, field
 
+D = Decimal
+
+@dataclass
 class ClickerState:
     """Simple class to keep track of the game state."""
 
-    def __init__(self) -> None:
-        self._total_cookies = 0.0
-        self._current_cookies = 15.0
-        self._current_time = 0.0
-        self._cps = 0.0
-        # A list of tuples where each entry in the tuple is:
-        # - A time
-        # - An item that was bought at that time (or None),
-        # - The cost of the item
-        # - The total number of cookies produced by that time
+    # A list of tuples where each entry in the tuple is:
+    # - A time
+    # - An item that was bought at that time (or None),
+    # - The cost of the item
+    # - The total number of cookies produced by that time
+    total_cookies: Decimal = D(0)
+    current_cookies: Decimal = D(15)
+    current_time: Decimal = D(0)
+    cps: Decimal = D(0)
 
-        self._history = [(0.0, "", 0.0, 0.0)]
+    history: List[Tuple[Decimal, str, Decimal, Decimal]] = field(
+        init=False, repr=False,
+        default_factory=lambda: [(D(0), "", D(0), D(0))])
 
     def __str__(self) -> str:
         """Returns human readable state."""
         return "\n".join([
-            f"Time elapsed: {self._current_time:0.1e}",
-            f"Cookies baked (all time): {self._total_cookies:0.3e}",
-            f"Cookies in bank: {self._current_cookies:0.3e}",
-            f"Cookies per second: {self._cps:0.3e}"]) + "\n"
+            f"Time elapsed: {self.current_time:0.1e}",
+            f"Cookies baked (all time): {self.total_cookies:0.3e}",
+            f"Cookies in bank: {self.current_cookies:0.3e}",
+            f"Cookies per second: {self.cps:0.3e}"]) + "\n"
 
-    @property
-    def current_cookies(self) -> float:
-        return self._current_cookies
 
-    @property
-    def cps(self) -> float:
-        return self._cps
-
-    @property
-    def current_time(self) -> float:
-        return self._current_time
-
-    @property
-    def total_cookies(self) -> float:
-        return self._total_cookies
-
-    @property
-    def history(self) -> List[Tuple[float, str, float, float]]:
-        return self._history
-
-    def time_until(self, building) -> float:
+    def time_until(self, building) -> Decimal:
         """Returns time until you have the given number of cookies.
 
         Could be 0 if you already have enough cookies.
-        Should return a float with no fractional part.
+        Should return a Decimal with no fractional part.
         """
 
-        cookie_diff = building.cost - self._current_cookies
+        cookie_diff = building.cost - self.current_cookies
         if cookie_diff > 0:
-            return math.ceil(cookie_diff / self._cps)
+            time = math.ceil(cookie_diff / self.cps)
+            return time
         else:
-            return 0.0
+            return D(0)
 
-    def wait(self, building) -> None:
-        """Waits for the given amount of time and updates state."""
+    def wait_for_building(self, building) -> None:
+        """Waits for the given amount of time and updates state
+        based on the building.
+        """
         time = self.time_until(building)
+        # print(f"Waiting {time} to build {building.name} ({building.count})")
+        return self.wait(time)
+
+    def wait(self, time: D) -> None:
+        """Waits for the given amount of time and updates state."""
         if time <= 0:
             return
 
-        self._current_time += time
-        self._current_cookies += (time * self._cps)
-        self._total_cookies += (time * self._cps)
+        self.current_time += time
+        self.current_cookies += (time * self.cps)
+        self.total_cookies += (time * self.cps)
 
     def buy(self, building) -> None:
         """Waits until the building is buildable,
         Buys a building by updating the state."""
 
-        self.wait(building)
+        self.wait_for_building(building)
 
-        assert self._current_cookies >= building.cost, \
-            f"Cannot buy this building: {building}, because the cost " + \
-            f"({building.cost}) are greater than current cookies ({self._current_cookies})"
+        assert self.current_cookies >= building.cost, \
+            f"Cannot buy \"{building.name}\", because the cost " + \
+            f"({building.cost}) are greater than current cookies ({self.current_cookies}). " + \
+            f"Diff: {self.current_cookies - building.cost}"
 
-        self._cps += building.cps
-        self._current_cookies -= building.cost
+        self.cps = self.cps + building.cps
+        self.current_cookies -= building.cost
 
-        self._history.append((
-            self._current_time,
+        self.history.append((
+            self.current_time,
             building.name,
             building.cost,
-            self._total_cookies
+            self.total_cookies
         ))
 

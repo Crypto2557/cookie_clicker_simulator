@@ -5,17 +5,23 @@ import math
 
 from typing import Callable, List, Type, Tuple, Union, Dict
 from dataclasses import dataclass, field
+from decimal import Decimal
+
 
 from cookie_clicker.utils import Config
 from cookie_clicker.clicker_state import ClickerState
 
+D = Decimal
+
 class BuildingFactory(object):
 
-    def __init__(self, building_info: Union[str, Dict[str, Dict[str, float]]], growth_factor=1.15) -> None:
+    def __init__(self,
+        building_info: Union[str, Dict[str, Dict[str, float]]],
+        growth_factor=1.15) -> None:
         super(BuildingFactory, self).__init__()
 
         self._built_buildings = {}
-        self.growth_factor = growth_factor
+        self.growth_factor = D(str(growth_factor))
         self.state = ClickerState()
 
 
@@ -39,13 +45,16 @@ class BuildingFactory(object):
             kwargs = dict(
                 factory=self,
                 name=building_name,
-                initial_cost=_info["cost"],
-                initial_cps=_info["cps"],
+                initial_cost=D(str(_info["cost"])),
+                initial_cps=D(str(_info["cps"])),
                 count=0
             )
             self._built_buildings[building_name] = Building(**kwargs)
 
         return self._built_buildings[building_name]
+
+    def __iter__(self):
+        return iter(self.buildings)
 
     def build(self, building_name: str) -> Building:
         if building_name not in self._buildings:
@@ -57,15 +66,15 @@ class BuildingFactory(object):
         building.count += 1
         return building
 
-    def time_until(self, building_name: str) -> float:
+    def time_until(self, building_name: str) -> Decimal:
         building = self[building_name]
         return self.state.time_until(building)
 
 @dataclass
 class Building:
     name: str
-    initial_cost: float
-    initial_cps: float
+    initial_cost: Decimal
+    initial_cps: Decimal
     count: int = 0
     factory: BuildingFactory = field(repr=False, default=None)
 

@@ -2,6 +2,9 @@ from unittest import TestCase
 
 import math
 from tempfile import NamedTemporaryFile
+from decimal import Decimal
+
+D = Decimal
 
 from cookie_clicker.buildings import BuildingFactory, Building
 from cookie_clicker.clicker_state import ClickerState
@@ -13,11 +16,11 @@ class BaseFactoryTest(TestCase):
         super(BaseFactoryTest, self).__init__()
 
         self.building_info = dict(
-            Cursor=dict(cost=15,   cps=0.1),
-            Grandma=dict(cost=100, cps=1),
+            Cursor=dict(cost=D(15),   cps=D(str(0.1))),
+            Grandma=dict(cost=D(100), cps=D(1)),
         )
 
-        self.growth_factor = 1.15
+        self.growth_factor = D(str(1.15))
 
 class CreationTest(BaseFactoryTest):
 

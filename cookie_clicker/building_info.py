@@ -3,7 +3,7 @@ from typing import Dict, List, Union
 
 import copy
 
-from cookie_clicker.utils import read_config_file
+from cookie_clicker.utils import Config
 
 
 class BuildingInfo:
@@ -15,7 +15,7 @@ class BuildingInfo:
         self._build_growth = growth_factor
 
         if isinstance(building_info,  str):
-            self._buildings = read_config_file(building_info)
+            self._buildings = Config.load(building_info)
             [values.update({'count': 0}) for k, values in self._buildings.items()]
 
         elif isinstance(building_info, dict):

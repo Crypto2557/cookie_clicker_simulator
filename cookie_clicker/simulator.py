@@ -1,7 +1,11 @@
 from tabulate import tabulate
-from typing import Callable, List, Type, Tuple, Union
+from typing import Callable, List, Type, Tuple, Union, Dict
+from decimal import Decimal
+
+D = Decimal
 
 from cookie_clicker.building_info import BuildingInfo
+from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.buildings import BuildingFactory
 from cookie_clicker import strategies
 
@@ -13,59 +17,52 @@ class Simulator:
     """
 
     def __init__(self, building_info: Union[str, Dict[str, Dict[str, float]]],
-                 duration: float = 1e10) -> None:
+                 duration: Decimal = 1e10) -> None:
 
         self.building_info = building_info
-        self.duration = duration
+        self.duration = D(duration)
 
     def new_factory(self):
         return BuildingFactory(self.building_info)
 
-    def run_strategy(self, strategy: Callable, print_results: bool = True) -> ClickerState:
-        """Runs a simulation with one strategy."""
+    @property
+    def state(self):
+        return self.factory.state
 
-        factory = self.new_factory()
-        clicker_state = factory.state
-
-        # clicker_state = ClickerState()
-        # building_info = self.building_info.clone()
+    def reset(self, strategy: Callable):
+        self.factory = self.new_factory()
 
         if hasattr(strategy, "reset"):
             strategy.reset()
 
-        while clicker_state.current_time <= self.duration:
+    @property
+    def ready(self):
+        return self.state.current_time > self.duration
+
+    def run_strategy(self, strategy: Callable, print_results: bool = True) -> ClickerState:
+        """Runs a simulation with one strategy."""
+
+        self.reset(strategy)
+
+        while not self.ready:
             item_to_buy = strategy(
-                clicker_state.current_cookies, clicker_state.cps,
-                self.duration - clicker_state.current_time,
-                building_info)  # Determine the item to buy next
+                self.state.current_cookies,
+                self.state.cps,
+                self.duration - self.state.current_time,
+                self.factory)  # Determine the item to buy next
 
             if item_to_buy is None:
                 break
 
-            try:
-                elapsed = factory.time_until(item_to_buy)
-                # Determine how much time must elapse until it is possible to purchase the item.
-            except ZeroDivisionError:
-                print('Impossible purchase made!')
-                break
+            self.factory.build(item_to_buy)
 
-            if clicker_state.current_time + elapsed > self.duration:
-                break
-
-            clicker_state.wait(elapsed)
-
-            clicker_state.buy_item(item_to_buy,
-                                   building_info.get_cost(item_to_buy),
-                                   building_info.get_cps(item_to_buy))
-
-            building_info.update_building(item_to_buy)
-
-        clicker_state.wait(self.duration - clicker_state.current_time)
+        time_remain = self.duration - self.state.current_time
+        self.state.wait(time_remain)
 
         if print_results:
-            print(clicker_state)
+            print(self.state)
 
-        return clicker_state
+        return self.state
 
     def run_strategies(self, strategy: str = None, run_all: bool = False, print_results: bool = False) -> List[Tuple[str, ClickerState]]:
         clicker_states = []

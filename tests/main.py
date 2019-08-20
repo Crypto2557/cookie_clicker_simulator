@@ -13,6 +13,7 @@ sys.path.insert(0, project_dir)
 # from tests.dummy import *
 from tests.factory_tests import *
 from tests.building_tests import *
+from tests.computation_tests import *
 
 import unittest
 unittest.main()
