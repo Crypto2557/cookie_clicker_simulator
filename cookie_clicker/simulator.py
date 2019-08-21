@@ -1,9 +1,14 @@
+from __future__ import annotations
 from tabulate import tabulate
-from typing import Callable, List, Type, Tuple
+from typing import List, Tuple, Union, Dict
+from decimal import Decimal
 
-from cookie_clicker.building_info import BuildingInfo
+D = Decimal
+
 from cookie_clicker.clicker_state import ClickerState
-from cookie_clicker import strategies
+from cookie_clicker.buildings import BuildingFactory
+from cookie_clicker.utils import Registry
+from cookie_clicker.strategies.base import BaseStrategy
 
 
 class Simulator:
@@ -12,88 +17,67 @@ class Simulator:
     duration and a strategy.
     """
 
-    def __init__(self, building_info: str,
-                 duration: float = 1e10) -> None:
+    def __init__(self,
+                 building_info: Union[str, Dict[str, Dict[str, float]]],
+                 duration: Decimal = D(1e10)) -> None:
 
-        self.building_info = BuildingInfo(building_info)
-        self.duration = duration
+        self.building_info = building_info
+        self.duration = D(duration)
 
-    def run_strategy(self, strategy: Callable, print_results: bool = True) -> ClickerState:
+    def new_factory(self) -> BuildingFactory:
+        return BuildingFactory(self.building_info)
+
+    @property
+    def state(self) -> ClickerState:
+        return self.factory.state
+
+    def reset(self, strategy: BaseStrategy) -> None:
+        self.factory = self.new_factory()
+        strategy.reset()
+
+    @property
+    def ready(self) -> bool:
+        return self.state.current_time > self.duration
+
+    def run_strategy(self, strategy: BaseStrategy,
+                     print_results: bool = True) -> ClickerState:
         """Runs a simulation with one strategy."""
-        clicker_state = ClickerState()
-        building_info = self.building_info.clone()
 
-        if hasattr(strategy, "reset"):
-            strategy.reset()
+        self.reset(strategy)
 
-        while clicker_state.current_time <= self.duration:
+        while not self.ready:
             item_to_buy = strategy(
-                clicker_state.current_cookies, clicker_state.cps,
-                self.duration - clicker_state.current_time,
-                building_info)  # Determine the item to buy next
+                self.state.current_cookies, self.state.cps,
+                self.duration - self.state.current_time,
+                self.factory)  # Determine the item to buy next
 
             if item_to_buy is None:
                 break
-            try:
-                elapsed = clicker_state.time_until(
-                    building_info.get_cost(item_to_buy)
-                )  # Determine how much time must elapse until it is possible to purchase the item.
-            except ZeroDivisionError:
-                print('Impossible purchase made!')
-                break
 
-            if clicker_state.current_time + elapsed > self.duration:
-                break
+            self.factory.build(item_to_buy)
 
-            clicker_state.wait(elapsed)
-
-            clicker_state.buy_item(item_to_buy,
-                                   building_info.get_cost(item_to_buy),
-                                   building_info.get_cps(item_to_buy))
-
-            building_info.update_building(item_to_buy)
-
-        clicker_state.wait(self.duration - clicker_state.current_time)
+        time_remain = self.duration - self.state.current_time
+        self.state.wait(time_remain)
 
         if print_results:
-            print(clicker_state)
+            print(self.state)
 
-        return clicker_state
+        return self.state
 
-    def run_strategies(self, strategy: str = None, run_all: bool = False, print_results: bool = False) -> List[Tuple[str, ClickerState]]:
+    def run_strategies(self,
+                       strategy: str = None,
+                       run_all: bool = False,
+                       print_results: bool = False
+                      ) -> List[Tuple[str, ClickerState]]:
         clicker_states = []
 
         if strategy is not None:
-            strat_dict = {strat.__name__: strat for strat in strategies.all_strategies}
-            assert strategy in strat_dict, \
-                f"Could not find strategy \"{strategy}\" in the strategy registry!"
-
-            strategy_list = [strat_dict[strategy]]
-
-        elif run_all:
-            strategy_list = strategies.all_strategies
-
+            strategy_list = Registry.get_strategies(strategy)
         else:
-            strategy_list = strategies.active
+            strategy_list = Registry.strategies(active_only=not run_all)
 
-        for strategy in strategy_list:
-            clicker_states.append((strategy.__name__, self.run_strategy(strategy, print_results)))
+        for strat in strategy_list:
+            clicker_states.append(
+                (strat.name, self.run_strategy(strat, print_results)))
+
         return clicker_states
-
-
-    def print_comparison(self, clicker_states: List[Tuple[str, ClickerState]]) -> None:
-        headers = ['#', 'Strategy', 'All Time', 'Current', 'CPS']
-        tablerows = []
-        for i, (name, clicker_state) in enumerate(clicker_states):
-            tablerows.append([
-                i,
-                name,
-                clicker_state.total_cookies,
-                clicker_state.current_cookies,
-                clicker_state.cps
-            ])
-        table = tabulate(tablerows,
-                         headers,
-                         tablefmt='fancy_grid',
-                         numalign='center')
-        print(table)

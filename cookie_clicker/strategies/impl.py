@@ -1,56 +1,74 @@
 """Here you find strategies, that are more comprehensive"""
-from cookie_clicker.utils.decorators import register_strategy
+from typing import Optional
+from decimal import Decimal
+D = Decimal
 
-@register_strategy(skip=False)
-def cheap(cookies, cps, time_left, building_info):
+from cookie_clicker.strategies.base import BaseStrategy
+from cookie_clicker.buildings.factory import BuildingFactory
+
+
+class CheapStrategy(BaseStrategy):
     """This strategy buys always the cheapest item."""
-    item_list = building_info.buildings
 
-    costs = [(building_info.get_cost(building), building)
-             for building in building_info.buildings]
-    costs.sort(key=lambda tup: tup[0])
+    def __init__(self) -> None:
+        super(CheapStrategy, self).__init__(name="cheap")
 
-    if costs[0][0] <= (time_left * cps + cookies):
-        return costs[0][1]
-    else:
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> Optional[str]:
+        costs = [(factory[building].cost, building) for building in factory]
+        costs.sort(key=lambda tup: tup[0])
+
+        if costs[0][0] <= (time_left * cps + cookies):
+            return costs[0][1]
+        else:
+            return None
+
+
+class ExpensiveStrategy(BaseStrategy):
+    """This strategy buys always the most expensive item."""
+
+    def __init__(self) -> None:
+        super(ExpensiveStrategy, self).__init__(name="expensive")
+
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> Optional[str]:
+        costs = [(factory[building].cost, building) for building in factory]
+        costs.sort(key=lambda tup: tup[0], reverse=True)
+
+        for cost, building in costs:
+            if cost <= (time_left * cps + cookies):
+                return building
         return None
 
 
-@register_strategy(skip=False)
-def expensive(cookies, cps, time_left, building_info):
-    """This strategy buys always the most expensive item."""
-    item_list = building_info.buildings
+class MonsterStrategy(BaseStrategy):
 
-    costs = [(building_info.get_cost(building), building)
-             for building in building_info.buildings]
-    costs.sort(key=lambda tup: tup[0], reverse=True)
+    def __init__(self):
+        super(MonsterStrategy, self).__init__(name="Monster")
 
-    for cost, building in costs:
-        if cost <= (time_left * cps + cookies):
-            return building
-    return None
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> Optional[str]:
 
+        def payback_period(cost: Decimal, cookies_in_bank: Decimal,
+                           cps: Decimal, cps_building: Decimal) -> Decimal:
+            return D(str(max(cost - cookies_in_bank / cps,
+                             0))) / cps + cost / cps_building
 
-@register_strategy(skip=False)
-def monster(cookies, cps, time_left, building_info):
+        if cps == 0.0:
+            return 'Cursor'
 
-    def payback_period(cost: float, cookies_in_bank: float, cps: float,
-                       cps_building: float) -> float:
-        return max(cost - cookies / cps, 0) / cps + cost / cps_building
+        payback_period_per_item = []
 
-    if cps == 0.0:
-        return 'Cursor'
+        for building_name in factory:
+            building = factory[building_name]
+            payback_period_per_item.append(
+                (building_name,
+                 payback_period(cost=building.cost,
+                                cookies_in_bank=cookies,
+                                cps=cps,
+                                cps_building=building.cps)))
 
-    item_strings = building_info.buildings
-    payback_period_per_item = []
-    for item in item_strings:
-        payback_period_per_item.append(
-            (item,
-             payback_period(cost=building_info.get_cost(item),
-                            cookies_in_bank=cookies,
-                            cps=cps,
-                            cps_building=building_info.get_cps(item))))
-    payback_period_per_item.sort(key=lambda tup: tup[1])
+        payback_period_per_item.sort(key=lambda tup: tup[1])
 
-    best_option = payback_period_per_item[0][0]
-    return best_option
+        best_option = payback_period_per_item[0][0]
+        return best_option

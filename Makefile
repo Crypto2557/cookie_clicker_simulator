@@ -4,6 +4,8 @@ run:
 run_tests:
 	python tests/main.py
 
+typecheck:
+	mypy main.py
 
 install_conda:
 	conda env create -f environment.yml

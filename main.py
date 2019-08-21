@@ -1,57 +1,59 @@
 #!/usr/bin/env python
 import argparse
 from tabulate import tabulate
+from typing import Dict, List
+from decimal import Decimal
 
 from cookie_clicker.simulator import Simulator
-from cookie_clicker.utils import Config
+from cookie_clicker.utils import Config, Registry
 from cookie_clicker import competitions
 
 
 def run_challenge(building_info: str, strategy: str = None, run_all_strategies: bool = False, run_all_competitions: bool = True):
-    competition_list = competitions.all_competitions if run_all_competitions else competitions.active
 
     results = {}
-    for criterion, duration, _ in competition_list:
-        simulator = Simulator(building_info=building_info, duration=duration)
+    for comp in Registry.competitions(run_all_competitions):
+        simulator = Simulator(building_info=building_info, duration=comp.duration)
         clicker_states = simulator.run_strategies(strategy, run_all_strategies, False)
-        results[criterion.__name__] = {name: criterion(clicker_state) for name, clicker_state in clicker_states}
+        results[comp.name] = {name: comp(clicker_state) for name, clicker_state in clicker_states}
 
     return results
 
 
-def print_challenge_results(results):
+def print_challenge_results(results: Dict[str, Dict[str, Decimal]]):
     strategy_names = list(results[list(results.keys())[0]].keys())
     competition_names = list(results.keys())
 
     header = ['Strategy \\ Competition'] + competition_names
-    tablerows = []
+    tablerows: List[List[str]] = []
     for strategy_name in strategy_names:
-        tablerow = [strategy_name]
+        tablerow: List[str] = [strategy_name]
         for competition_name in competition_names:
 
             res = results[competition_name][strategy_name]
-            # Check if this result is the best result
-            _, _, bigger_is_better = competitions.all_competitions[
-                [func.__name__ for func, _, _ in competitions.all_competitions].index(competition_name)]
 
+            # Check if this result is the best result
+            comp = Registry.get_competition(competition_name)
 
             is_best_result = True
             for comp_strategy_name in strategy_names:
                 comp_res = results[competition_name][comp_strategy_name]
-                if comp_res > res and bigger_is_better:
-                    is_best_result = False
-                    break
-                if comp_res < res and not bigger_is_better:
+
+                if comp_res > res and comp.bigger_is_better:
                     is_best_result = False
                     break
 
-            if competition_name.startswith('time_to') and res == competitions.FOREVER:
+                if comp_res < res and not comp.bigger_is_better:
+                    is_best_result = False
+                    break
+
+            if competition_name.startswith('time_to') and res == comp.FOREVER:
                 disp_val = '-'
             else:
-                disp_val = '%.3e' % res
+                disp_val = f'{res:.3e}'
 
             if is_best_result:
-                disp_val = '** %s **' % disp_val
+                disp_val = f'** {disp_val} **'
 
             tablerow += [disp_val]
         tablerows += [tablerow]
@@ -76,7 +78,7 @@ if __name__ == '__main__':
                         '-b',
                         type=str,
                         help='Config file about the buildings.',
-                        default=Config.DEFAULT_BUILDING_INFO)
+                        default=Config.Defaults.BUILDING_INFO)
 
     parser.add_argument('--all_strategies',
                         '-a',
