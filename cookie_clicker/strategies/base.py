@@ -4,6 +4,7 @@ from decimal import Decimal
 from cookie_clicker.utils import Registry
 from cookie_clicker.buildings.factory import BuildingFactory
 
+
 class BaseStrategy(abc.ABC):
 
     def __init__(self, name: str = None, skip: bool = False) -> None:
@@ -14,7 +15,8 @@ class BaseStrategy(abc.ABC):
         Registry.register_strategy(self)
 
     @abc.abstractmethod
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> Optional[str]:
         raise NotImplementedError
 
     def reset(self) -> None:
@@ -30,10 +32,12 @@ class CursorStrategy(BaseStrategy):
     functions must do this and return None rather than an item you
     can't buy in the time left.
     """
+
     def __init__(self) -> None:
         super(CursorStrategy, self).__init__(name="Cursor", skip=True)
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> str:
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> str:
         return "Cursor"
 
 
@@ -47,5 +51,6 @@ class NoneStrategy(BaseStrategy):
     def __init__(self) -> None:
         super(NoneStrategy, self).__init__(name="None", skip=True)
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> None:
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> None:
         return None

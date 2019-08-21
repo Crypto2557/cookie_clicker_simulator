@@ -8,6 +8,7 @@ from cookie_clicker.utils import Config
 from cookie_clicker.strategies.base import BaseStrategy
 from cookie_clicker.buildings import BuildingFactory
 
+
 class ShoppingListStrategy(BaseStrategy):
 
     @classmethod
@@ -28,7 +29,8 @@ class ShoppingListStrategy(BaseStrategy):
         self.purchases = ShoppingListStrategy.load(shopping_list_path)
         self.purchases_current: List[str] = []
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> Optional[str]:
 
         if cookies == 15 and cps == 0:
             self.purchases_current = self.purchases.copy()
@@ -43,6 +45,8 @@ class ShoppingListStrategy(BaseStrategy):
             return None
 
     @classmethod
-    def create_from_folder(cls, folder: str = Config.Defaults.SHOPPING_LISTS_FOLDER) -> None:
+    def create_from_folder(cls,
+                           folder: str = Config.Defaults.SHOPPING_LISTS_FOLDER
+                          ) -> None:
         for item in sorted(Path(folder).iterdir()):
             ShoppingListStrategy(str(item))

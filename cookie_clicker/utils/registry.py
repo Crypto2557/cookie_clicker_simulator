@@ -4,6 +4,7 @@ from typing import Any, List, Dict
 
 from collections import OrderedDict
 
+
 class Registry(abc.ABC):
     _strategies: OrderedDict = OrderedDict()
     _competitions: OrderedDict = OrderedDict()
@@ -15,18 +16,21 @@ class Registry(abc.ABC):
     @classmethod
     def strategies(cls, active_only: bool = True) -> List:
         if active_only:
-            return [strat for strat in cls._strategies.values() if not strat.skip]
+            return [
+                strat for strat in cls._strategies.values() if not strat.skip
+            ]
         else:
             return list(cls._strategies.values())
 
     @classmethod
     def get_strategies(cls, name: str) -> List:
-        return [strat for strat in cls._strategies.values() if name in strat.name]
+        return [
+            strat for strat in cls._strategies.values() if name in strat.name
+        ]
 
     @classmethod
     def get_strategy(cls, name: str):
         return cls._strategies[name]
-
 
     @classmethod
     def register_competition(cls, competition) -> None:
@@ -43,10 +47,11 @@ class Registry(abc.ABC):
     @classmethod
     def competitions(cls, active_only: bool = True) -> List:
         if active_only:
-            return [comp for comp in cls._competitions.values() if not comp.skip]
+            return [
+                comp for comp in cls._competitions.values() if not comp.skip
+            ]
         else:
             return list(cls._competitions.values())
-
 
     @classmethod
     def get_competition(cls, name: str):

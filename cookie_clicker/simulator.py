@@ -17,7 +17,8 @@ class Simulator:
     duration and a strategy.
     """
 
-    def __init__(self, building_info: Union[str, Dict[str, Dict[str, float]]],
+    def __init__(self,
+                 building_info: Union[str, Dict[str, Dict[str, float]]],
                  duration: Decimal = D(1e10)) -> None:
 
         self.building_info = building_info
@@ -38,15 +39,15 @@ class Simulator:
     def ready(self) -> bool:
         return self.state.current_time > self.duration
 
-    def run_strategy(self, strategy: BaseStrategy, print_results: bool = True) -> ClickerState:
+    def run_strategy(self, strategy: BaseStrategy,
+                     print_results: bool = True) -> ClickerState:
         """Runs a simulation with one strategy."""
 
         self.reset(strategy)
 
         while not self.ready:
             item_to_buy = strategy(
-                self.state.current_cookies,
-                self.state.cps,
+                self.state.current_cookies, self.state.cps,
                 self.duration - self.state.current_time,
                 self.factory)  # Determine the item to buy next
 
@@ -63,7 +64,11 @@ class Simulator:
 
         return self.state
 
-    def run_strategies(self, strategy: str = None, run_all: bool = False, print_results: bool = False) -> List[Tuple[str, ClickerState]]:
+    def run_strategies(self,
+                       strategy: str = None,
+                       run_all: bool = False,
+                       print_results: bool = False
+                      ) -> List[Tuple[str, ClickerState]]:
         clicker_states = []
 
         if strategy is not None:
@@ -72,6 +77,7 @@ class Simulator:
             strategy_list = Registry.strategies(active_only=not run_all)
 
         for strat in strategy_list:
-            clicker_states.append((strat.name, self.run_strategy(strat, print_results)))
+            clicker_states.append(
+                (strat.name, self.run_strategy(strat, print_results)))
 
         return clicker_states

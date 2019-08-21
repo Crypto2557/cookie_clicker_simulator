@@ -15,23 +15,23 @@ from cookie_clicker.clicker_state import ClickerState
 class BuildingFactory(object):
 
     def __init__(self,
-        building_info: Union[str, Dict[str, Dict[str, float]]],
-        growth_factor: Decimal = D(1.15)) -> None:
+                 building_info: Union[str, Dict[str, Dict[str, float]]],
+                 growth_factor: Decimal = D(1.15)) -> None:
         super(BuildingFactory, self).__init__()
 
         self._built_buildings: Dict[str, Building] = {}
         self.growth_factor = D(str(growth_factor))
         self.state = ClickerState()
 
-
-        if isinstance(building_info,  str):
+        if isinstance(building_info, str):
             self._buildings = Config.load(building_info)
 
         elif isinstance(building_info, dict):
             self._buildings = copy.deepcopy(building_info)
 
         else:
-            raise ValueError(f'Not supported build info type: {type(building_info)}')
+            raise ValueError(
+                f'Not supported build info type: {type(building_info)}')
 
     @property
     def buildings(self) -> List[str]:
@@ -47,8 +47,7 @@ class BuildingFactory(object):
                 name=building_name,
                 initial_cost=D(str(_info["cost"])),
                 initial_cps=D(str(_info["cps"])),
-                count=0
-            )
+                count=0)
 
         return self._built_buildings[building_name]
 
@@ -69,6 +68,7 @@ class BuildingFactory(object):
         building = self[building_name]
         return self.state.time_until(building)
 
+
 @dataclass
 class Building:
     name: str
@@ -79,9 +79,10 @@ class Building:
 
     @property
     def cost(self) -> Decimal:
-        return D(math.ceil(self.initial_cost * self.factory.growth_factor**self.count))
+        return D(
+            math.ceil(self.initial_cost *
+                      self.factory.growth_factor**self.count))
 
     @property
     def cps(self) -> Decimal:
         return self.initial_cps
-

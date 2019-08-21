@@ -6,14 +6,16 @@ D = Decimal
 from cookie_clicker.strategies.base import BaseStrategy
 from cookie_clicker.buildings.factory import BuildingFactory
 
+
 class CheapStrategy(BaseStrategy):
     """This strategy buys always the cheapest item."""
-    def __init__(self):
+
+    def __init__(self) -> None:
         super(CheapStrategy, self).__init__(name="cheap")
 
-    def __call__(self, cookies, cps, time_left, factory):
-        costs = [(factory[building].cost, building)
-                 for building in factory]
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> Optional[str]:
+        costs = [(factory[building].cost, building) for building in factory]
         costs.sort(key=lambda tup: tup[0])
 
         if costs[0][0] <= (time_left * cps + cookies):
@@ -21,12 +23,15 @@ class CheapStrategy(BaseStrategy):
         else:
             return None
 
+
 class ExpensiveStrategy(BaseStrategy):
     """This strategy buys always the most expensive item."""
+
     def __init__(self) -> None:
         super(ExpensiveStrategy, self).__init__(name="expensive")
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> Optional[str]:
         costs = [(factory[building].cost, building) for building in factory]
         costs.sort(key=lambda tup: tup[0], reverse=True)
 
@@ -35,15 +40,19 @@ class ExpensiveStrategy(BaseStrategy):
                 return building
         return None
 
+
 class MonsterStrategy(BaseStrategy):
+
     def __init__(self):
         super(MonsterStrategy, self).__init__(name="Monster")
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal, factory: BuildingFactory) -> Optional[str]:
+    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
+                 factory: BuildingFactory) -> Optional[str]:
 
-        def payback_period(cost: Decimal, cookies_in_bank: Decimal, cps: Decimal,
-                           cps_building: Decimal) -> Decimal:
-            return D(str(max(cost - cookies_in_bank / cps, 0))) / cps + cost / cps_building
+        def payback_period(cost: Decimal, cookies_in_bank: Decimal,
+                           cps: Decimal, cps_building: Decimal) -> Decimal:
+            return D(str(max(cost - cookies_in_bank / cps,
+                             0))) / cps + cost / cps_building
 
         if cps == 0.0:
             return 'Cursor'

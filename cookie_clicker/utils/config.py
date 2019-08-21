@@ -15,6 +15,7 @@ except ImportError:
 
 
 class Config(abc.ABC):
+
     class Defaults(abc.ABC):
         BUILDING_INFO: str = "configs/buildings.yml"
         SHOPPING_LISTS_FOLDER: str = "shopping_lists"

@@ -5,6 +5,7 @@ from decimal import Decimal
 
 D = Decimal
 
+
 @dataclass
 class ClickerState:
     """Simple class to keep track of the game state."""
@@ -20,7 +21,8 @@ class ClickerState:
     cps: Decimal = D(0)
 
     history: List[Tuple[Decimal, str, Decimal, Decimal]] = field(
-        init=False, repr=False,
+        init=False,
+        repr=False,
         default_factory=lambda: [(D(0), "", D(0), D(0))])
 
     def __str__(self) -> str:
@@ -29,8 +31,8 @@ class ClickerState:
             f"Time elapsed: {self.current_time:0.1e}",
             f"Cookies baked (all time): {self.total_cookies:0.3e}",
             f"Cookies in bank: {self.current_cookies:0.3e}",
-            f"Cookies per second: {self.cps:0.3e}"]) + "\n"
-
+            f"Cookies per second: {self.cps:0.3e}"
+        ]) + "\n"
 
     def time_until(self, building: Any) -> Decimal:
         """Returns time until you have the given number of cookies.
@@ -76,10 +78,5 @@ class ClickerState:
         self.cps = self.cps + building.cps
         self.current_cookies -= building.cost
 
-        self.history.append((
-            self.current_time,
-            building.name,
-            building.cost,
-            self.total_cookies
-        ))
-
+        self.history.append((self.current_time, building.name, building.cost,
+                             self.total_cookies))
