@@ -63,21 +63,3 @@ class Simulator:
             print(self.state)
 
         return self.state
-
-    def run_strategies(self,
-                       strategy: str = None,
-                       run_all: bool = False,
-                       print_results: bool = False
-                      ) -> List[Tuple[str, ClickerState]]:
-        clicker_states = []
-
-        if strategy is not None:
-            strategy_list = Registry.get_strategies(strategy)
-        else:
-            strategy_list = Registry.strategies(active_only=not run_all)
-
-        for strat in strategy_list:
-            clicker_states.append(
-                (strat.name, self.run_strategy(strat, print_results)))
-
-        return clicker_states
