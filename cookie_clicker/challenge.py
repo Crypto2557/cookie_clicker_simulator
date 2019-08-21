@@ -9,7 +9,7 @@ from cookie_clicker.utils import Registry
 
 class Challenge(object):
 
-    def __init__(self, opts: Namespace):
+    def __init__(self, opts: Namespace) -> None:
         super(Challenge, self).__init__()
 
         self._competitions = Registry.competitions(
