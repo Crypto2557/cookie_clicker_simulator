@@ -10,16 +10,20 @@ from cookie_clicker.utils import Registry
 from cookie_clicker import competitions
 from cookie_clicker import strategies
 
+
 class Challenge(object):
+
     def __init__(self, opts: Namespace):
         super(Challenge, self).__init__()
 
-        self._competitions = Registry.competitions(active_only=not opts.all_competitions)
+        self._competitions = Registry.competitions(
+            active_only=not opts.all_competitions)
 
         if opts.strategy is not None:
             self._strategies = Registry.get_strategies(opts.strategy)
         else:
-            self._strategies = Registry.strategies(active_only=not opts.all_strategies)
+            self._strategies = Registry.strategies(
+                active_only=not opts.all_strategies)
 
         self.building_info = opts.building_info
         self.results: Dict[str, Dict[str, Decimal]] = {}
@@ -33,33 +37,36 @@ class Challenge(object):
         for comp in self._competitions:
             self.results[comp.name] = {}
 
-            simulator = Simulator(
-                building_info=self.building_info,
-                duration=comp.duration)
+            simulator = Simulator(building_info=self.building_info,
+                                  duration=comp.duration)
 
             for strat in self._strategies:
-                clicker_state = simulator.run_strategy(strat, print_results=False)
+                clicker_state = simulator.run_strategy(strat,
+                                                       print_results=False)
                 self.results[comp.name][strat.name] = comp(clicker_state)
 
     def print_results(self,
-        tablefmt: str = 'fancy_grid',
-        numalign: str = 'center',
-        stralign: str = 'center') -> None:
+                      tablefmt: str = 'fancy_grid',
+                      numalign: str = 'center',
+                      stralign: str = 'center') -> None:
 
         headers = ['Strategy \\ Competition'] + self.comp_names
         tablerows: List[List[str]] = []
 
         for strategy_name in self.strat_names:
             tablerow: List[str] = [strategy_name]
-            for competition_name, comp in zip(self.comp_names, self._competitions):
+            for competition_name, comp in zip(self.comp_names,
+                                              self._competitions):
                 comp_res = self.results[competition_name]
-                best_result = (max if comp.bigger_is_better else min)(comp_res.values())
+                compare_func = max if comp.bigger_is_better else min
+                best_result = compare_func(comp_res.values())
 
                 res = comp_res[strategy_name]
 
                 is_best_result = res == best_result
 
-                if competition_name.startswith('time_to') and res == comp.FOREVER:
+                if competition_name.startswith(
+                        'time_to') and res == comp.FOREVER:
                     disp_val = '-'
                 else:
                     disp_val = f'{res:.3e}'
@@ -72,9 +79,7 @@ class Challenge(object):
 
         print(
             tabulate(tablerows,
-                headers=tuple(headers),
-                tablefmt=tablefmt,
-                numalign=numalign,
-                stralign=stralign
-            )
-        )
+                     headers=tuple(headers),
+                     tablefmt=tablefmt,
+                     numalign=numalign,
+                     stralign=stralign))

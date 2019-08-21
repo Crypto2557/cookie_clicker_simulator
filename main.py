@@ -7,6 +7,7 @@ from decimal import Decimal
 from cookie_clicker.utils import Config
 from cookie_clicker.challenge import Challenge
 
+
 def main(args):
     challenge = Challenge(args)
     challenge.run()
