@@ -6,10 +6,6 @@ from tabulate import tabulate
 from cookie_clicker.simulator import Simulator
 from cookie_clicker.utils import Registry
 
-# registers competitions and strategies
-from cookie_clicker import competitions
-from cookie_clicker import strategies
-
 
 class Challenge(object):
 
