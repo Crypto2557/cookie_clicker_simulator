@@ -7,6 +7,9 @@ run_tests:
 typecheck:
 	mypy main.py
 
+formatcheck:
+	find . -name '*.py' -print0 | xargs -0 yapf --style google --diff
+
 install_conda:
 	conda env create -f environment.yml
 
