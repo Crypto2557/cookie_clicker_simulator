@@ -4,29 +4,36 @@ channels:
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
+  - astroid=2.2.5=py37_0
   - bzip2=1.0.8=h516909a_0
-  - ca-certificates=2019.6.16=hecc5488_0
+  - ca-certificates=2019.5.15=1
   - certifi=2019.6.16=py37_1
+  - isort=4.3.21=py37_0
+  - lazy-object-proxy=1.4.1=py37h7b6447c_0
   - libffi=3.2.1=he1b5a44_1006
   - libgcc-ng=9.1.0=hdf63c60_0
   - libstdcxx-ng=9.1.0=hdf63c60_0
+  - mccabe=0.6.1=py37_1
   - ncurses=6.1=hf484d3e_1002
-  - openssl=1.1.1c=h516909a_0
+  - openssl=1.1.1c=h7b6447c_1
   - pip=19.2.2=py37_0
+  - pylint=2.3.1=py37_0
   - python=3.7.3=h33d41f4_1
   - pyyaml=5.1.2=py37h516909a_0
   - readline=8.0=hf8c457e_0
   - setuptools=41.0.1=py37_0
+  - six=1.12.0=py37_0
   - sqlite=3.29.0=hcee41ef_0
   - tabulate=0.8.3=py_0
   - tk=8.6.9=hed695b0_1002
   - wheel=0.33.4=py37_0
+  - wrapt=1.11.2=py37h7b6447c_0
   - xz=5.2.4=h14c3975_1001
   - yaml=0.1.7=h14c3975_1001
+  - yapf=0.28.0=py_0
   - zlib=1.2.11=h516909a_1005
   - pip:
     - mypy==0.720
     - mypy-extensions==0.4.1
     - typed-ast==1.4.0
     - typing-extensions==3.7.4
-
