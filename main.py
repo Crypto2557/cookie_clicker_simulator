@@ -4,7 +4,8 @@ from tabulate import tabulate
 from typing import Dict, List
 from decimal import Decimal
 
-from cookie_clicker import competitions
+from cookie_clicker.utils import Config
+from cookie_clicker.challenge import Challenge
 
 def main(args):
     challenge = Challenge(args)
