@@ -9,13 +9,20 @@ from cookie_clicker.utils import Config, Registry
 from cookie_clicker import competitions
 
 
-def run_challenge(building_info: str, strategy: str = None, run_all_strategies: bool = False, run_all_competitions: bool = True):
+def run_challenge(building_info: str,
+                  strategy: str = None,
+                  run_all_strategies: bool = False,
+                  run_all_competitions: bool = True):
 
     results = {}
     for comp in Registry.competitions(run_all_competitions):
-        simulator = Simulator(building_info=building_info, duration=comp.duration)
-        clicker_states = simulator.run_strategies(strategy, run_all_strategies, False)
-        results[comp.name] = {name: comp(clicker_state) for name, clicker_state in clicker_states}
+        simulator = Simulator(building_info=building_info,
+                              duration=comp.duration)
+        clicker_states = simulator.run_strategies(strategy, run_all_strategies,
+                                                  False)
+        results[comp.name] = {
+            name: comp(clicker_state) for name, clicker_state in clicker_states
+        }
 
     return results
 
@@ -58,11 +65,17 @@ def print_challenge_results(results: Dict[str, Dict[str, Decimal]]):
             tablerow += [disp_val]
         tablerows += [tablerow]
 
-    print(tabulate(tablerows, headers=tuple(header), tablefmt='fancy_grid', numalign='center', stralign='center'))
+    print(
+        tabulate(tablerows,
+                 headers=tuple(header),
+                 tablefmt='fancy_grid',
+                 numalign='center',
+                 stralign='center'))
 
 
 def main(args):
-    results = run_challenge(args.building_info, args.strategy, args.all_strategies, args.all_competitions)
+    results = run_challenge(args.building_info, args.strategy,
+                            args.all_strategies, args.all_competitions)
     print_challenge_results(results)
 
 
