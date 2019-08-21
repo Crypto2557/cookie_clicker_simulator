@@ -43,6 +43,6 @@ class ShoppingListStrategy(BaseStrategy):
             return None
 
     @classmethod
-    def create_from_folder(cls, folder: str = Config.DEFAULT_SHOPPING_LISTS_FOLDER) -> None:
+    def create_from_folder(cls, folder: str = Config.Defaults.SHOPPING_LISTS_FOLDER) -> None:
         for item in sorted(Path(folder).iterdir()):
             ShoppingListStrategy(str(item))

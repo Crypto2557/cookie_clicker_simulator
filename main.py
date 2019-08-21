@@ -78,7 +78,7 @@ if __name__ == '__main__':
                         '-b',
                         type=str,
                         help='Config file about the buildings.',
-                        default=Config.DEFAULT_BUILDING_INFO)
+                        default=Config.Defaults.BUILDING_INFO)
 
     parser.add_argument('--all_strategies',
                         '-a',

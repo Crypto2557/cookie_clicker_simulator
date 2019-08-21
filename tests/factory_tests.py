@@ -20,7 +20,7 @@ class BaseFactoryTest(TestCase):
             Grandma=dict(cost=D(100), cps=D(1)),
         )
 
-        self.growth_factor = D(str(1.15))
+        self.growth_factor = D(115) / 100
 
 class CreationTest(BaseFactoryTest):
 

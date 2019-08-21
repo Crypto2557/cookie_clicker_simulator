@@ -16,7 +16,7 @@ class Mathematician(BaseCompetition):
             duration=D(1e20)
         )
 
-        factory = BuildingFactory(Config.DEFAULT_BUILDING_INFO)
+        factory = BuildingFactory(Config.Defaults.BUILDING_INFO)
         buildings_with_costs = [(building_name, factory[building_name].cost) for building_name in factory]
         pairs = sorted(buildings_with_costs, key=lambda x: x[1], reverse=True)
         self.counts = {building: min(128, 2**i) for i, (building, _) in enumerate(pairs)}

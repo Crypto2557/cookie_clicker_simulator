@@ -15,10 +15,9 @@ except ImportError:
 
 
 class Config(abc.ABC):
-
-    # TODO: move these to Defaults under-class
-    DEFAULT_BUILDING_INFO: str = "configs/buildings.yml"
-    DEFAULT_SHOPPING_LISTS_FOLDER: str = "shopping_lists"
+    class Defaults(abc.ABC):
+        BUILDING_INFO: str = "configs/buildings.yml"
+        SHOPPING_LISTS_FOLDER: str = "shopping_lists"
 
     MAX_PRECISION: int = 54
 
