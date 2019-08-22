@@ -1,18 +1,19 @@
+""""""
 from __future__ import annotations
-
 import copy
 import math
-
-from typing import Callable, List, Type, Tuple, Union, Dict
+from typing import List, Union, Dict
 from dataclasses import dataclass, field
 from decimal import Decimal
-D = Decimal
 
 from cookie_clicker.utils import Config
 from cookie_clicker.clicker_state import ClickerState
 
+D = Decimal
 
-class BuildingFactory(object):
+
+class BuildingFactory:
+    """"""
 
     def __init__(self,
                  building_info: Union[str, Dict[str, Dict[str, float]]],
@@ -35,10 +36,11 @@ class BuildingFactory(object):
 
     @property
     def buildings(self) -> List[str]:
+        """"""
         return list(self._buildings.keys())
 
     def __getitem__(self, building_name: str) -> Building:
-
+        """"""
         if building_name not in self._built_buildings:
             _info = self._buildings[building_name]
 
@@ -52,9 +54,11 @@ class BuildingFactory(object):
         return self._built_buildings[building_name]
 
     def __iter__(self):
+        """"""
         return iter(self.buildings)
 
     def build(self, building_name: str) -> Union[Building, None]:
+        """"""
         if building_name not in self._buildings:
             return None
 
@@ -65,12 +69,14 @@ class BuildingFactory(object):
         return building
 
     def time_until(self, building_name: str) -> Decimal:
+        """"""
         building = self[building_name]
         return self.state.time_until(building)
 
 
 @dataclass
 class Building:
+    """"""
     name: str
     initial_cost: Decimal
     initial_cps: Decimal
@@ -79,10 +85,12 @@ class Building:
 
     @property
     def cost(self) -> Decimal:
+        """"""
         return D(
             math.ceil(self.initial_cost *
                       self.factory.growth_factor**self.count))
 
     @property
     def cps(self) -> Decimal:
+        """"""
         return self.initial_cps

@@ -1,15 +1,17 @@
+""""""
 import copy
-
 from decimal import Decimal
-D = Decimal
 
-from .base import BaseCompetition
+from cookie_clicker.competitions.base import BaseCompetition
 from cookie_clicker.buildings import BuildingFactory
 from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.utils import Config
 
+D = Decimal
+
 
 class Mathematician(BaseCompetition):
+    """"""
 
     def __init__(self) -> None:
         super(Mathematician, self).__init__(name="time_to_mathematician",

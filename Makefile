@@ -2,7 +2,7 @@ run:
 	python main.py
 
 run_tests:
-	python tests/main.py
+	python -m unittest discover
 
 typecheck:
 	mypy main.py

@@ -1,3 +1,6 @@
+"""
+
+"""
 from typing import Dict, List
 from decimal import Decimal
 from argparse import Namespace
@@ -7,7 +10,8 @@ from cookie_clicker.simulator import Simulator
 from cookie_clicker.utils import Registry
 
 
-class Challenge(object):
+class Challenge:
+    """"""
 
     def __init__(self, opts: Namespace) -> None:
         super(Challenge, self).__init__()
@@ -28,6 +32,7 @@ class Challenge(object):
         self.strat_names = [s.name for s in self._strategies]
 
     def run(self) -> None:
+        """"""
         self.results.clear()
 
         for comp in self._competitions:
@@ -45,7 +50,7 @@ class Challenge(object):
                       tablefmt: str = 'fancy_grid',
                       numalign: str = 'center',
                       stralign: str = 'center') -> None:
-
+        """"""
         headers = ['Strategy \\ Competition'] + self.comp_names
         tablerows: List[List[str]] = []
 

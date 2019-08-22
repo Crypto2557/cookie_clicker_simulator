@@ -1,3 +1,4 @@
+""""""
 import math
 from dataclasses import dataclass, field
 from typing import List, Tuple, Any
@@ -44,8 +45,8 @@ class ClickerState:
         cookie_diff = building.cost - self.current_cookies
         if cookie_diff > 0:
             return D(math.ceil(cookie_diff / self.cps))
-        else:
-            return D(0)
+
+        return D(0)
 
     def wait_for_building(self, building: Any) -> None:
         """Waits for the given amount of time and updates state
@@ -70,10 +71,11 @@ class ClickerState:
 
         self.wait_for_building(building)
 
-        assert self.current_cookies >= building.cost, \
-            f"Cannot buy \"{building.name}\", because the cost " + \
-            f"({building.cost}) are greater than current cookies ({self.current_cookies}). " + \
-            f"Diff: {self.current_cookies - building.cost}"
+        assert self.current_cookies >= building.cost, (
+            f"Cannot buy \"{building.name}\", because the cost " +
+            f"({building.cost}) are greater than" +
+            f"current cookies ({self.current_cookies}). " +
+            f"Diff: {self.current_cookies - building.cost}")
 
         self.cps = self.cps + building.cps
         self.current_cookies -= building.cost

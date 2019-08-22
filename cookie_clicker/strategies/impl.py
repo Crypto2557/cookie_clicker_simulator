@@ -1,10 +1,10 @@
 """Here you find strategies, that are more comprehensive"""
 from typing import Optional
 from decimal import Decimal
-D = Decimal
-
 from cookie_clicker.strategies.base import BaseStrategy
 from cookie_clicker.buildings.factory import BuildingFactory
+
+D = Decimal
 
 
 class CheapStrategy(BaseStrategy):
@@ -20,8 +20,8 @@ class CheapStrategy(BaseStrategy):
 
         if costs[0][0] <= (time_left * cps + cookies):
             return costs[0][1]
-        else:
-            return None
+
+        return None
 
 
 class ExpensiveStrategy(BaseStrategy):
@@ -42,33 +42,43 @@ class ExpensiveStrategy(BaseStrategy):
 
 
 class MonsterStrategy(BaseStrategy):
+    """This strategy buys the item with the earliest payback"""
 
-    def __init__(self):
-        super(MonsterStrategy, self).__init__(name="Monster")
+    def __init__(self, name: str = 'Monster'):
+        super(MonsterStrategy, self).__init__(name=name)
 
     def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
                  factory: BuildingFactory) -> Optional[str]:
 
-        def payback_period(cost: Decimal, cookies_in_bank: Decimal,
-                           cps: Decimal, cps_building: Decimal) -> Decimal:
-            return D(str(max(cost - cookies_in_bank / cps,
-                             0))) / cps + cost / cps_building
-
         if cps == 0.0:
             return 'Cursor'
 
-        payback_period_per_item = []
+        payback_period_per_item = self.calculate_pp_per_item(factory=factory,
+                                                             cookies=cookies,
+                                                             cps=cps)
 
+        best_option = payback_period_per_item[0][0]
+        return best_option
+
+    def calculate_pp_per_item(self, factory: BuildingFactory, cookies: Decimal,
+                              cps: Decimal):
+        """"""
+        payback_period_per_item = []
         for building_name in factory:
             building = factory[building_name]
             payback_period_per_item.append(
                 (building_name,
-                 payback_period(cost=building.cost,
-                                cookies_in_bank=cookies,
-                                cps=cps,
-                                cps_building=building.cps)))
+                 self.payback_period(cost=building.cost,
+                                     cookies_in_bank=cookies,
+                                     cps=cps,
+                                     cps_building=building.cps)))
 
         payback_period_per_item.sort(key=lambda tup: tup[1])
+        return payback_period_per_item
 
-        best_option = payback_period_per_item[0][0]
-        return best_option
+    @staticmethod
+    def payback_period(cost: Decimal, cookies_in_bank: Decimal, cps: Decimal,
+                       cps_building: Decimal) -> Decimal:
+        """"""
+        return D(str(max(cost - cookies_in_bank / cps,
+                         0))) / cps + cost / cps_building

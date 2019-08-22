@@ -1,22 +1,24 @@
-import yaml
+""""""
 import abc
-
-from typing import Any, List
+from typing import Any
+import yaml
 
 try:
     from yaml import CLoader, CDumper
-    loader = lambda f: yaml.load(f, Loader=CLoader)
-    dumper = lambda data: yaml.dump(data, Dumper=CDumper)
+    LOADER = lambda file: yaml.load(file, Loader=CLoader)
+    DUMPER = lambda data: yaml.dump(data, Dumper=CDumper)
 
 except ImportError:
     from yaml import Loader, Dumper
-    loader = lambda f: yaml.load(f, Loader=Loader)
-    dumper = lambda data: yaml.dump(data, Dumper=Dumper)
+    LOADER = lambda file: yaml.load(file, Loader=Loader)
+    DUMPER = lambda data: yaml.dump(data, Dumper=Dumper)
 
 
 class Config(abc.ABC):
+    """"""
 
     class Defaults(abc.ABC):
+        """"""
         BUILDING_INFO: str = "configs/buildings.yml"
         SHOPPING_LISTS_FOLDER: str = "shopping_lists"
 
@@ -24,10 +26,12 @@ class Config(abc.ABC):
 
     @staticmethod
     def load(fpath: str) -> Any:
-        with open(fpath, "r") as f:
-            return loader(f)
+        """"""
+        with open(fpath, "r") as file:
+            return LOADER(file)
 
     @staticmethod
     def dump(fpath: str, content: Any) -> int:
-        with open(fpath, "w") as f:
-            return f.write(dumper(content))
+        """"""
+        with open(fpath, "w") as file:
+            return file.write(DUMPER(content))
