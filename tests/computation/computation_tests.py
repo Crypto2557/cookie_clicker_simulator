@@ -1,13 +1,15 @@
-from unittest import TestCase
+""""""
+import unittest
 from decimal import Decimal as D
 
-from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.buildings import BuildingFactory
 
 
-class RoundingTests(TestCase):
+class RoundingTests(unittest.TestCase):
+    """"""
 
-    def test_time_until_expensive_building(self):
+    def test_t_until_expensive_building(self):
+        """"""
         cases = [
             (D(4879362019269609589837922304), D(13743895347200),
              D(298117875605267) / 10),
@@ -30,3 +32,7 @@ class RoundingTests(TestCase):
             self.assertGreaterEqual(
                 state.current_cookies, building.cost,
                 f"[case {i}] {building.cost - state.current_cookies} missing!")
+
+
+if __name__ == '__main__':
+    unittest.main()

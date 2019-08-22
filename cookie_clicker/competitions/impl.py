@@ -1,11 +1,14 @@
+""""""
 from decimal import Decimal
-D = Decimal
 
 from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.competitions.base import BaseCompetition
 
+D = Decimal
+
 
 class ProfitCompetition(BaseCompetition):
+    """"""
 
     def __init__(self) -> None:
         super(ProfitCompetition, self).__init__(name="profit_at_timestep")
@@ -15,6 +18,7 @@ class ProfitCompetition(BaseCompetition):
 
 
 class RevenueCompetition(BaseCompetition):
+    """"""
 
     def __init__(self) -> None:
         super(RevenueCompetition, self).__init__(name="revenue_at_timestep")
@@ -24,6 +28,7 @@ class RevenueCompetition(BaseCompetition):
 
 
 class CPSCompetition(BaseCompetition):
+    """"""
 
     def __init__(self) -> None:
         super(CPSCompetition, self).__init__(name="cps_at_timestep")
@@ -33,6 +38,7 @@ class CPSCompetition(BaseCompetition):
 
 
 class TimeToRevenueCompetition(BaseCompetition):
+    """"""
 
     def __init__(self, target: Decimal = D(1e42)) -> None:
         super(TimeToRevenueCompetition, self).__init__(name="time_to_revenue",
@@ -49,5 +55,5 @@ class TimeToRevenueCompetition(BaseCompetition):
         if clicker_state.cps > 0:
             return ((self.target - clicker_state.total_cookies) /
                     clicker_state.cps) + clicker_state.current_time
-        else:
-            return self.FOREVER
+
+        return self.FOREVER

@@ -1,3 +1,6 @@
+"""
+Test module for upgrades
+"""
 from __future__ import annotations
 from typing import Dict, List
 
@@ -6,7 +9,6 @@ class UpdateInfo:
     """Class to track upgrade information."""
 
     def __init__(self, update_info: Dict[str, Dict[str, float]] = None) -> None:
-        self._build_growth = growth_factor
         self._info = update_info or {
             "Plain cookies": {
                 'condition': {
@@ -294,12 +296,6 @@ class UpdateInfo:
     def get_multipliers(self, item: str) -> float:
         """Gets the current CPS of an item."""
         return self._info[item]['multipliers']
-
-    # ???
-    def update_item(self, item: str) -> None:
-        """Updates the cost of an item by the growth factor."""
-        cost, cps = self._info[item].values()
-        self._info[item] = {'cost': cost * self._build_growth, 'cps': cps}
 
     def clone(self) -> UpgradeInfo:
         """Returns a clone of this BuildInfo."""

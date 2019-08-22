@@ -1,17 +1,18 @@
-from unittest import TestCase
-
+""""""
+import unittest
 import math
 from tempfile import NamedTemporaryFile
 from decimal import Decimal
-
-D = Decimal
 
 from cookie_clicker.buildings import BuildingFactory, Building
 from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.utils import Config
 
+D = Decimal
 
-class BaseFactoryTest(TestCase):
+
+class BaseFactoryTest(unittest.TestCase):
+    """"""
 
     def setUp(self):
         super(BaseFactoryTest, self).__init__()
@@ -25,6 +26,7 @@ class BaseFactoryTest(TestCase):
 
 
 class CreationTest(BaseFactoryTest):
+    """"""
 
     def test_creation_from_dict(self):
         factory = BuildingFactory(self.building_info)
@@ -38,10 +40,10 @@ class CreationTest(BaseFactoryTest):
 
     def test_creation_from_file(self):
 
-        _f = NamedTemporaryFile()
-        Config.dump(_f.name, self.building_info)
+        _file = NamedTemporaryFile()
+        Config.dump(_file.name, self.building_info)
 
-        factory = BuildingFactory(_f.name)
+        factory = BuildingFactory(_file.name)
         factory0 = BuildingFactory(self.building_info)
 
         self.assertSetEqual(set(factory.buildings),
@@ -54,6 +56,7 @@ class CreationTest(BaseFactoryTest):
 
 
 class BuildingTest(BaseFactoryTest):
+    """"""
 
     def setUp(self):
         super(BuildingTest, self).setUp()
@@ -101,6 +104,7 @@ class BuildingTest(BaseFactoryTest):
 
 
 class StateTest(BaseFactoryTest):
+    """"""
 
     def setUp(self):
         super(StateTest, self).setUp()
@@ -126,23 +130,28 @@ class StateTest(BaseFactoryTest):
         self.assertEqual(self.factory.state.current_cookies, 15,
                          "Initial cookies should be 15!")
 
-        building = self.factory.build("Cursor")
+        self.factory.build("Cursor")
 
         self.assertEqual(self.factory.state.current_cookies, 0,
                          f"Cookies after one Cursor should be 0!")
 
     def test_time_for_first_cursor(self):
 
-        t = self.factory.time_until("Cursor")
-        self.assertEqual(t, 0, "Time for the first cursor should be 0!")
+        time = self.factory.time_until("Cursor")
+        self.assertEqual(time, 0, "Time for the first cursor should be 0!")
 
     def test_time_for_next_cursor(self):
-        b = self.factory.build("Cursor")
+        building = self.factory.build("Cursor")
 
-        t = self.factory.time_until("Cursor")
-        cost = b.cost
+        time = self.factory.time_until("Cursor")
+        cost = building.cost
         cps = self.factory.state.cps
 
-        t_should = cost / cps
-        self.assertEqual(t, t_should,
-                         f"Time for the second cursor should be {t_should}!")
+        time_should = cost / cps
+        self.assertEqual(
+            time, time_should,
+            f"Time for the second cursor should be {time_should}!")
+
+
+if __name__ == '__main__':
+    unittest.main()

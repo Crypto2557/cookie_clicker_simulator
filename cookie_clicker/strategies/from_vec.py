@@ -1,13 +1,16 @@
+""""""
 import copy
 from typing import Optional, Dict
 from decimal import Decimal
-D = Decimal
-
-from cookie_clicker.strategies.base import BaseStrategy
+from cookie_clicker.strategies.impl import MonsterStrategy
 from cookie_clicker.buildings.factory import BuildingFactory
 
+D = Decimal
 
-class StrategyFromVec(BaseStrategy):
+
+class StrategyFromVec(MonsterStrategy):
+    """
+    """
     __default_dic = {
         "Cursor": 127,
         "Grandma": 128,
@@ -37,30 +40,18 @@ class StrategyFromVec(BaseStrategy):
     def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
                  factory: BuildingFactory) -> Optional[str]:
 
-        def payback_period(cost: Decimal, cookies_in_bank: Decimal,
-                           cps: Decimal, cps_building: Decimal) -> Decimal:
-            return D(str(max(cost - cookies_in_bank / cps,
-                             0))) / cps + cost / cps_building
-
         if cps == 0.0:
             return 'Cursor'
 
-        payback_period_per_item = []
+        payback_period_per_item = self.calculate_pp_per_item(factory=factory,
+                                                             cookies=cookies,
+                                                             cps=cps)
 
-        for building_name in factory:
-            building = factory[building_name]
-            payback_period_per_item.append(
-                (building_name,
-                 payback_period(cost=building.cost,
-                                cookies_in_bank=cookies,
-                                cps=cps,
-                                cps_building=building.cps)))
-
-        payback_period_per_item.sort(key=lambda tup: tup[1])
-        for best_option, *others in payback_period_per_item:
+        for best_option, _ in payback_period_per_item:
             if self.dic[best_option] > 0:
                 self.dic[best_option] -= 1
                 return best_option
+
         return None
 
     def reset(self) -> None:

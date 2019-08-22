@@ -1,15 +1,17 @@
+""""""
 import abc
 import sys
 import math
-
 from decimal import Decimal
-D = Decimal
 
 from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.utils import Registry
 
+D = Decimal
+
 
 class BaseCompetition(abc.ABC):
+    """"""
     FOREVER: Decimal = D(math.sqrt(sys.float_info.max))
 
     def __init__(self,
@@ -28,4 +30,5 @@ class BaseCompetition(abc.ABC):
 
     @abc.abstractmethod
     def __call__(self, clicker_state: ClickerState) -> Decimal:
+        """"""
         raise NotImplementedError

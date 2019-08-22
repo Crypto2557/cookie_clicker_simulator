@@ -1,3 +1,4 @@
+"""Registers all competing strategies"""
 from cookie_clicker.strategies.base import CursorStrategy
 from cookie_clicker.strategies.base import NoneStrategy
 from cookie_clicker.strategies.impl import CheapStrategy

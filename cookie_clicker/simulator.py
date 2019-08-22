@@ -1,14 +1,12 @@
+""""""
 from __future__ import annotations
-from tabulate import tabulate
-from typing import List, Tuple, Union, Dict
+from typing import Union, Dict
 from decimal import Decimal
-
-D = Decimal
-
 from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.buildings import BuildingFactory
-from cookie_clicker.utils import Registry
 from cookie_clicker.strategies.base import BaseStrategy
+
+D = Decimal
 
 
 class Simulator:
@@ -23,20 +21,25 @@ class Simulator:
 
         self.building_info = building_info
         self.duration = D(duration)
+        self.factory = self.new_factory()
 
     def new_factory(self) -> BuildingFactory:
+        """"""
         return BuildingFactory(self.building_info)
 
     @property
     def state(self) -> ClickerState:
+        """"""
         return self.factory.state
 
     def reset(self, strategy: BaseStrategy) -> None:
+        """"""
         self.factory = self.new_factory()
         strategy.reset()
 
     @property
     def ready(self) -> bool:
+        """"""
         return self.state.current_time > self.duration
 
     def run_strategy(self, strategy: BaseStrategy,

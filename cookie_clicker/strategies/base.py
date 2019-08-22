@@ -1,3 +1,4 @@
+""""""
 import abc
 from typing import Optional
 from decimal import Decimal
@@ -6,6 +7,7 @@ from cookie_clicker.buildings.factory import BuildingFactory
 
 
 class BaseStrategy(abc.ABC):
+    """"""
 
     def __init__(self, name: str = None, skip: bool = False) -> None:
         super(BaseStrategy, self).__init__()
@@ -17,11 +19,11 @@ class BaseStrategy(abc.ABC):
     @abc.abstractmethod
     def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
                  factory: BuildingFactory) -> Optional[str]:
+        """"""
         raise NotImplementedError
 
     def reset(self) -> None:
         """Don't do anything in the default case"""
-        pass
 
 
 class CursorStrategy(BaseStrategy):
