@@ -35,7 +35,8 @@ class ClickerState(object):
     @classmethod
     def new(cls,
             building_info: Union[str, Dict[str, Dict[str, float]]],
-            growth_factor: Decimal = Config.Defaults.GROWTH_FACTOR) -> ClickerState:
+            growth_factor: Decimal = Config.Defaults.GROWTH_FACTOR
+           ) -> ClickerState:
 
         state = cls()
         state.factory = BuildingFactory(building_info, growth_factor)

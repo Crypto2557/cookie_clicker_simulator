@@ -26,8 +26,9 @@ class BaseFactoryTest(unittest.TestCase):
 
     def new_factory(self, building_info=None, **kwargs):
         self.state = ClickerState.new(building_info or self.building_info,
-                                  **kwargs)
+                                      **kwargs)
         return self.state.factory
+
 
 class CreationTest(BaseFactoryTest):
     """"""
