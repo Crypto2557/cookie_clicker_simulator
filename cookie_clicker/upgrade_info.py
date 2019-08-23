@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Dict, List
 
 
-class UpdateInfo:
+class UpgradeInfo:
     """Class to track upgrade information."""
 
     def __init__(self, update_info: Dict[str, Dict[str, float]] = None) -> None:
