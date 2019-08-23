@@ -2,6 +2,7 @@
 import unittest
 from decimal import Decimal as D
 
+from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.buildings import BuildingFactory
 
 

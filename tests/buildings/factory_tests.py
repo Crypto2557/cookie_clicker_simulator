@@ -4,7 +4,7 @@ import math
 from tempfile import NamedTemporaryFile
 from decimal import Decimal
 
-from cookie_clicker.buildings import BuildingFactory, Building
+from cookie_clicker.buildings import Building
 from cookie_clicker.clicker_state import ClickerState
 from cookie_clicker.utils import Config
 
@@ -48,7 +48,7 @@ class CreationTest(BaseFactoryTest):
         Config.dump(_file.name, self.building_info)
 
         factory = self.new_factory(_file.name)
-        factory0 = self.new_factory(self.building_info)
+        factory0 = self.new_factory()
 
         self.assertSetEqual(set(factory.buildings),
                             set(self.building_info.keys()),
@@ -113,7 +113,7 @@ class StateTest(BaseFactoryTest):
         super(StateTest, self).setUp()
         self.factory = self.new_factory(growth_factor=self.growth_factor)
 
-    @skip
+    @unittest.skip
     def test_state_init(self):
         self.assertTrue(hasattr(self.factory, "state"),
                         "Factory should have a state!")
