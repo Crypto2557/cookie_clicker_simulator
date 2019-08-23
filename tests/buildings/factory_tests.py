@@ -25,7 +25,7 @@ class BaseFactoryTest(unittest.TestCase):
         self.growth_factor = D(115) / 100
 
     def new_factory(self, building_info=None, **kwargs):
-        self.state = ClickerState(building_info or self.building_info,
+        self.state = ClickerState.new(building_info or self.building_info,
                                   **kwargs)
         return self.state.factory
 
@@ -78,11 +78,11 @@ class BuildingTest(BaseFactoryTest):
         self.assertEqual(building.cost, self.building_info["Cursor"]["cost"])
         self.assertEqual(building.cps, self.building_info["Cursor"]["cps"])
 
-        self.factory.build("Cursor")
+        self.state.buy("Cursor")
         self.assertEqual(building.count, 1)
 
     def test_build_multiple(self):
-        building0 = self.factory.build("Cursor")
+        building0 = self.state.buy("Cursor")
         building1 = self.factory["Cursor"]
 
         self.assertIs(building0, building1,
@@ -96,12 +96,12 @@ class BuildingTest(BaseFactoryTest):
         self.assertEqual(building1.cps, self.building_info["Cursor"]["cps"],
                          "CPS must be the same after another build!")
 
-        building1 = self.factory.build("Cursor")
+        building1 = self.state.buy("Cursor")
         self.assertEqual(building1.count, 2)
 
     def test_build_not_present(self):
 
-        building = self.factory.build("NotCursor")
+        building = self.state.buy("NotCursor")
         self.assertIsNone(building,
                           "BuildingFactory.build should return something")
 
@@ -123,7 +123,7 @@ class StateTest(BaseFactoryTest):
     def test_cps_after_cursor_build(self):
         self.assertEqual(self.state.cps, 0, "Initial CPS should be 0!")
 
-        self.factory.build("Cursor")
+        self.state.buy("Cursor")
 
         cps_should = self.building_info["Cursor"]["cps"]
         self.assertEqual(self.state.cps, cps_should,
@@ -133,7 +133,7 @@ class StateTest(BaseFactoryTest):
         self.assertEqual(self.state.current_cookies, 15,
                          "Initial cookies should be 15!")
 
-        self.factory.build("Cursor")
+        self.state.buy("Cursor")
 
         self.assertEqual(self.state.current_cookies, 0,
                          f"Cookies after one Cursor should be 0!")
@@ -144,7 +144,7 @@ class StateTest(BaseFactoryTest):
         self.assertEqual(time, 0, "Time for the first cursor should be 0!")
 
     def test_time_for_next_cursor(self):
-        building = self.factory.build("Cursor")
+        building = self.state.buy("Cursor")
 
         time = self.state.time_until(self.factory["Cursor"])
         cost = building.cost

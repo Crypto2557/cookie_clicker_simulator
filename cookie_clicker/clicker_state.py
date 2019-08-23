@@ -1,4 +1,5 @@
 """"""
+from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from typing import Callable, List, Type, Tuple, Union, Dict, Any
@@ -11,7 +12,7 @@ D = Decimal
 
 
 @dataclass
-class ClickerState:
+class ClickerState(object):
     """Simple class to keep track of the game state."""
 
     # A list of tuples where each entry in the tuple is:
@@ -19,6 +20,8 @@ class ClickerState:
     # - An item that was bought at that time (or None),
     # - The cost of the item
     # - The total number of cookies produced by that time
+    factory: BuildingFactory = field(repr=False, init=False)
+
     total_cookies: Decimal = D(0)
     current_cookies: Decimal = D(15)
     current_time: Decimal = D(0)
@@ -29,13 +32,15 @@ class ClickerState:
         repr=False,
         default_factory=lambda: [(D(0), "", D(0), D(0))])
 
-    def __init__(self,
-                 building_info: Union[str, Dict[str, Dict[str, float]]],
-                 growth_factor: Decimal = Config.Defaults.GROWTH_FACTOR,
-                 *args, **kwargs):
-        super(ClickerState, self).__init__(*args, **kwargs)
+    @classmethod
+    def new(cls,
+            building_info: Union[str, Dict[str, Dict[str, float]]],
+            growth_factor: Decimal = Config.Defaults.GROWTH_FACTOR) -> ClickerState:
 
-        self.factory = BuildingFactory(building_info, growth_factor)
+        state = cls()
+        state.factory = BuildingFactory(building_info, growth_factor)
+
+        return state
 
     def __str__(self) -> str:
         """Returns human readable state."""
@@ -76,10 +81,14 @@ class ClickerState:
         self.current_cookies += (time * self.cps)
         self.total_cookies += (time * self.cps)
 
-    def buy(self, building: Building) -> None:
+    def buy(self, building_name: str) -> Any:
         """Waits until the building is buildable,
         Buys a building by updating the state."""
 
+        if building_name not in self.factory:
+            return None
+
+        building = self.factory[building_name]
         self.wait_for_building(building)
 
         assert self.current_cookies >= building.cost, (
@@ -91,5 +100,8 @@ class ClickerState:
         self.cps = self.cps + building.cps
         self.current_cookies -= building.cost
 
+        building.count += 1
         self.history.append((self.current_time, building.name, building.cost,
                              self.total_cookies))
+
+        return building

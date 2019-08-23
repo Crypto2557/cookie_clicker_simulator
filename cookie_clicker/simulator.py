@@ -21,20 +21,20 @@ class Simulator:
 
         self.building_info = building_info
         self.duration = D(duration)
-        self.factory = self.new_factory()
+        self.state = self.new_state()
 
-    def new_factory(self) -> BuildingFactory:
+    def new_state(self) -> ClickerState:
         """"""
-        return BuildingFactory(self.building_info)
+        return ClickerState.new(self.building_info)
 
     @property
-    def state(self) -> ClickerState:
+    def factory(self) -> BuildingFactory:
         """"""
-        return self.factory.state
+        return self.state.factory
 
     def reset(self, strategy: BaseStrategy) -> None:
         """"""
-        self.factory = self.new_factory()
+        self.state = self.new_state()
         strategy.reset()
 
     @property
@@ -57,7 +57,7 @@ class Simulator:
             if item_to_buy is None:
                 break
 
-            self.factory.build(item_to_buy)
+            self.state.buy(item_to_buy)
 
         time_remain = self.duration - self.state.current_time
         self.state.wait(time_remain)
