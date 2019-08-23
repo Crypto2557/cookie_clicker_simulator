@@ -20,7 +20,7 @@ class RoundingTests(unittest.TestCase):
 
         for i, (cost, current_cookies, cps) in enumerate(cases):
 
-            state = ClickerState(dict(Test=dict(cost=cost, cps=1600000)))
+            state = ClickerState.new(dict(Test=dict(cost=cost, cps=1600000)))
 
             state.current_cookies = current_cookies
             state.cps = cps

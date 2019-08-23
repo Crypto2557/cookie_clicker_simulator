@@ -57,16 +57,16 @@ class BuildingFactory:
         """"""
         return iter(self.buildings)
 
-    def build(self, building_name: str) -> Union[Building, None]:
-        """"""
-        if building_name not in self._buildings:
-            return None
+    # def build(self, building_name: str) -> Union[Building, None]:
+    #     """"""
+    #     if building_name not in self._buildings:
+    #         return None
 
-        building = self[building_name]
-        # self.state.buy(building)
+    #     building = self[building_name]
+    #     # self.state.buy(building)
 
-        building.count += 1
-        return building
+    #     building.count += 1
+    #     return building
 
     # def time_until(self, building_name: str) -> Decimal:
     #     """"""
