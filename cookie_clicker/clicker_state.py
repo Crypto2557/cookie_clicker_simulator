@@ -1,8 +1,11 @@
 """"""
 import math
 from dataclasses import dataclass, field
-from typing import List, Tuple, Any
+from typing import Callable, List, Type, Tuple, Union, Dict, Any
 from decimal import Decimal
+
+from cookie_clicker.buildings import BuildingFactory, Building
+from cookie_clicker.utils import Config
 
 D = Decimal
 
@@ -26,6 +29,14 @@ class ClickerState:
         repr=False,
         default_factory=lambda: [(D(0), "", D(0), D(0))])
 
+    def __init__(self,
+                 building_info: Union[str, Dict[str, Dict[str, float]]],
+                 growth_factor: Decimal = Config.Defaults.GROWTH_FACTOR,
+                 *args, **kwargs):
+        super(ClickerState, self).__init__(*args, **kwargs)
+
+        self.factory = BuildingFactory(building_info, growth_factor)
+
     def __str__(self) -> str:
         """Returns human readable state."""
         return "\n".join([
@@ -35,7 +46,7 @@ class ClickerState:
             f"Cookies per second: {self.cps:0.3e}"
         ]) + "\n"
 
-    def time_until(self, building: Any) -> Decimal:
+    def time_until(self, building: Building) -> Decimal:
         """Returns time until you have the given number of cookies.
 
         Could be 0 if you already have enough cookies.
@@ -48,7 +59,7 @@ class ClickerState:
 
         return D(0)
 
-    def wait_for_building(self, building: Any) -> None:
+    def wait_for_building(self, building: Building) -> None:
         """Waits for the given amount of time and updates state
         based on the building.
         """
@@ -65,7 +76,7 @@ class ClickerState:
         self.current_cookies += (time * self.cps)
         self.total_cookies += (time * self.cps)
 
-    def buy(self, building: Any) -> None:
+    def buy(self, building: Building) -> None:
         """Waits until the building is buildable,
         Buys a building by updating the state."""
 

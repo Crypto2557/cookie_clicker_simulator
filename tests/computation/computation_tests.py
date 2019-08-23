@@ -19,14 +19,13 @@ class RoundingTests(unittest.TestCase):
 
         for i, (cost, current_cookies, cps) in enumerate(cases):
 
-            factory = BuildingFactory(dict(Test=dict(cost=cost, cps=1600000)))
+            state = ClickerState(dict(Test=dict(cost=cost, cps=1600000)))
 
-            state = factory.state
             state.current_cookies = current_cookies
             state.cps = cps
 
-            building = factory["Test"]
-            time = factory.time_until("Test")
+            building = state.factory["Test"]
+            time = state.time_until(building)
             state.wait(time)
 
             self.assertGreaterEqual(
