@@ -1,7 +1,10 @@
 """"""
 import abc
-from typing import Any
 import yaml
+
+from typing import Any, List
+from decimal import Decimal
+D = Decimal
 
 try:
     from yaml import CLoader, CDumper
@@ -21,6 +24,7 @@ class Config(abc.ABC):
         """"""
         BUILDING_INFO: str = "configs/buildings.yml"
         SHOPPING_LISTS_FOLDER: str = "shopping_lists"
+        GROWTH_FACTOR: Decimal = D(1.15)
 
     MAX_PRECISION: int = 54
 

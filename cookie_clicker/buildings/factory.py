@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 
 from cookie_clicker.utils import Config
-from cookie_clicker.clicker_state import ClickerState
+# from cookie_clicker.clicker_state import ClickerState
 
 D = Decimal
 
@@ -17,12 +17,12 @@ class BuildingFactory:
 
     def __init__(self,
                  building_info: Union[str, Dict[str, Dict[str, float]]],
-                 growth_factor: Decimal = D(1.15)) -> None:
+                 growth_factor: Decimal = Config.Defaults.GROWTH_FACTOR) -> None:
         super(BuildingFactory, self).__init__()
 
         self._built_buildings: Dict[str, Building] = {}
         self.growth_factor = D(str(growth_factor))
-        self.state = ClickerState()
+        # self.state = ClickerState()
 
         if isinstance(building_info, str):
             self._buildings = Config.load(building_info)
@@ -63,15 +63,15 @@ class BuildingFactory:
             return None
 
         building = self[building_name]
-        self.state.buy(building)
+        # self.state.buy(building)
 
         building.count += 1
         return building
 
-    def time_until(self, building_name: str) -> Decimal:
-        """"""
-        building = self[building_name]
-        return self.state.time_until(building)
+    # def time_until(self, building_name: str) -> Decimal:
+    #     """"""
+    #     building = self[building_name]
+    #     return self.state.time_until(building)
 
 
 @dataclass

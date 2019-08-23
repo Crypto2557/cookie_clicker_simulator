@@ -24,12 +24,16 @@ class BaseFactoryTest(unittest.TestCase):
 
         self.growth_factor = D(115) / 100
 
+    def new_factory(self, building_info=None, **kwargs):
+        self.state = ClickerState(building_info or self.building_info,
+                                  **kwargs)
+        return self.state.factory
 
 class CreationTest(BaseFactoryTest):
     """"""
 
     def test_creation_from_dict(self):
-        factory = BuildingFactory(self.building_info)
+        factory = self.new_factory()
 
         self.assertIsNotNone(factory)
         self.assertTrue(hasattr(factory, "buildings"))
@@ -43,8 +47,8 @@ class CreationTest(BaseFactoryTest):
         _file = NamedTemporaryFile()
         Config.dump(_file.name, self.building_info)
 
-        factory = BuildingFactory(_file.name)
-        factory0 = BuildingFactory(self.building_info)
+        factory = self.new_factory(_file.name)
+        factory0 = self.new_factory(self.building_info)
 
         self.assertSetEqual(set(factory.buildings),
                             set(self.building_info.keys()),
@@ -60,8 +64,7 @@ class BuildingTest(BaseFactoryTest):
 
     def setUp(self):
         super(BuildingTest, self).setUp()
-        self.factory = BuildingFactory(self.building_info,
-                                       growth_factor=self.growth_factor)
+        self.factory = self.new_factory(growth_factor=self.growth_factor)
 
     def test_first_build(self):
 
@@ -108,9 +111,9 @@ class StateTest(BaseFactoryTest):
 
     def setUp(self):
         super(StateTest, self).setUp()
-        self.factory = BuildingFactory(self.building_info,
-                                       growth_factor=self.growth_factor)
+        self.factory = self.new_factory(growth_factor=self.growth_factor)
 
+    @skip
     def test_state_init(self):
         self.assertTrue(hasattr(self.factory, "state"),
                         "Factory should have a state!")
@@ -118,34 +121,34 @@ class StateTest(BaseFactoryTest):
         self.assertIsInstance(self.factory.state, ClickerState)
 
     def test_cps_after_cursor_build(self):
-        self.assertEqual(self.factory.state.cps, 0, "Initial CPS should be 0!")
+        self.assertEqual(self.state.cps, 0, "Initial CPS should be 0!")
 
         self.factory.build("Cursor")
 
         cps_should = self.building_info["Cursor"]["cps"]
-        self.assertEqual(self.factory.state.cps, cps_should,
+        self.assertEqual(self.state.cps, cps_should,
                          f"CPS with one Cursor should be {cps_should}!")
 
     def test_cookies_after_cursor_build(self):
-        self.assertEqual(self.factory.state.current_cookies, 15,
+        self.assertEqual(self.state.current_cookies, 15,
                          "Initial cookies should be 15!")
 
         self.factory.build("Cursor")
 
-        self.assertEqual(self.factory.state.current_cookies, 0,
+        self.assertEqual(self.state.current_cookies, 0,
                          f"Cookies after one Cursor should be 0!")
 
     def test_time_for_first_cursor(self):
 
-        time = self.factory.time_until("Cursor")
+        time = self.state.time_until(self.factory["Cursor"])
         self.assertEqual(time, 0, "Time for the first cursor should be 0!")
 
     def test_time_for_next_cursor(self):
         building = self.factory.build("Cursor")
 
-        time = self.factory.time_until("Cursor")
+        time = self.state.time_until(self.factory["Cursor"])
         cost = building.cost
-        cps = self.factory.state.cps
+        cps = self.state.cps
 
         time_should = cost / cps
         self.assertEqual(
