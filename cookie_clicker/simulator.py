@@ -24,27 +24,37 @@ class Simulator:
         self.state = self.new_state()
 
     def new_state(self) -> ClickerState:
-        """"""
+        """ Creates a new state object from given building info """
         return ClickerState.new(self.building_info)
 
     @property
     def factory(self) -> BuildingFactory:
-        """"""
+        """ Getter for state's building factory"""
         return self.state.factory
 
     def reset(self, strategy: BaseStrategy) -> None:
-        """"""
+        """ Creates a new state object and resets the strategy"""
         self.state = self.new_state()
         strategy.reset()
 
     @property
     def ready(self) -> bool:
-        """"""
+        """ Checks, whether the state's current time is above the duration
+        meaning, the simulation is ready. """
         return self.state.current_time > self.duration
 
     def run_strategy(self, strategy: BaseStrategy,
                      print_results: bool = True) -> ClickerState:
-        """Runs a simulation with one strategy."""
+        """ Runs a simulation with one strategy. Following steps are done:
+        - a new state is created
+        - strategy is reset
+        - until current time has not reached the duration
+            * strategy is asked, which item should be bought
+            * as long as the item is not None, state buys the item
+            (meaning waiting until enough deposit is present)
+        - finally state waits for the remaining amount of time
+        - if "print_results" is set, print the state information
+        """
 
         self.reset(strategy)
 

@@ -11,7 +11,10 @@ from cookie_clicker.utils import Registry
 
 
 class Challenge:
-    """"""
+    """ A challenge creates desired competitions and strategies.
+    It also runs each strategy for every challenge and prints the
+    result.
+    """
 
     def __init__(self, opts: Namespace) -> None:
         super(Challenge, self).__init__()
@@ -32,7 +35,8 @@ class Challenge:
         self.strat_names = [s.name for s in self._strategies]
 
     def run(self) -> None:
-        """"""
+        """ executes each strategy for every competition
+        and saves the results """
         self.results.clear()
 
         for comp in self._competitions:
@@ -50,7 +54,7 @@ class Challenge:
                       tablefmt: str = 'fancy_grid',
                       numalign: str = 'center',
                       stralign: str = 'center') -> None:
-        """"""
+        """ pretty prints gathered results """
         headers = ['Strategy \\ Competition'] + self.comp_names
         tablerows: List[List[str]] = []
 

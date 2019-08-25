@@ -37,6 +37,13 @@ class ClickerState(object):
             building_info: Union[str, Dict[str, Dict[str, float]]],
             growth_factor: Decimal = Config.Defaults.GROWTH_FACTOR
            ) -> ClickerState:
+        """ We need to create a state via this method, otherwise building
+        factory is not initialized.
+        __init__ method cannot be overwritten since dataclass decorator
+        does not create other attributes correctly (esp. the history is
+        not created)
+
+        """
 
         state = cls()
         state.factory = BuildingFactory(building_info, growth_factor)
