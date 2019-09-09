@@ -5,18 +5,20 @@ from collections import OrderedDict
 
 
 class Registry(abc.ABC):
-    """"""
+    """ This class is responsible for registration and access
+    of strategies and competitions """
     _strategies: OrderedDict = OrderedDict()
     _competitions: OrderedDict = OrderedDict()
 
     @classmethod
     def register_strategy(cls, strategy) -> None:
-        """"""
+        """ Registers a strategy """
         cls._strategies[strategy.name] = strategy
 
     @classmethod
     def strategies(cls, active_only: bool = True) -> List:
-        """"""
+        """ Returns a list of strategies. Optionally only
+        active strategies may be selected. """
         if active_only:
             return [
                 strat for strat in cls._strategies.values() if not strat.skip
@@ -25,14 +27,16 @@ class Registry(abc.ABC):
 
     @classmethod
     def get_strategies(cls, name: str) -> List:
-        """"""
+        """ Returns a list of strategies containing
+        the passed name in their name. """
+
         return [
             strat for strat in cls._strategies.values() if name in strat.name
         ]
 
     @classmethod
     def get_strategy(cls, name: str):
-        """"""
+        """ Returns a registered strategy with the given name. """
         return cls._strategies[name]
 
     @classmethod
@@ -49,7 +53,8 @@ class Registry(abc.ABC):
 
     @classmethod
     def competitions(cls, active_only: bool = True) -> List:
-        """"""
+        """ Returns a list of competitions. Optionally only
+        active competitions may be selected. """
         if active_only:
             return [
                 comp for comp in cls._competitions.values() if not comp.skip
@@ -58,5 +63,5 @@ class Registry(abc.ABC):
 
     @classmethod
     def get_competition(cls, name: str):
-        """"""
+        """ Returns a registered competition with the given name. """
         return cls._competitions[name]
