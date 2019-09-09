@@ -18,13 +18,15 @@ except ImportError:
 
 
 class Config(abc.ABC):
-    """"""
+    """ Abstract class holding some of the
+    configuration logic and default values """
 
     class Defaults(abc.ABC):
-        """"""
+        """ nested class holding default values """
+
         BUILDING_INFO: str = "configs/buildings.yml"
         SHOPPING_LISTS_FOLDER: str = "shopping_lists"
-        GROWTH_FACTOR: Decimal = D(1.15)
+        GROWTH_FACTOR: Decimal = D(115) / 100
 
     MAX_PRECISION: int = 54
 

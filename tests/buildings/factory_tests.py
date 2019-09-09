@@ -22,7 +22,7 @@ class BaseFactoryTest(unittest.TestCase):
             Grandma=dict(cost=D(100), cps=D(1)),
         )
 
-        self.growth_factor = D(115) / 100
+        self.growth_factor = Config.Defaults.GROWTH_FACTOR
 
     def new_factory(self, building_info=None, **kwargs):
         self.state = ClickerState.new(building_info or self.building_info,

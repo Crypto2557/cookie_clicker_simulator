@@ -70,11 +70,13 @@ class Building:
 
     @property
     def cost(self) -> Decimal:
-        """"""
+        """ computes the costs based on the growth_factor, amount of
+        buildings already built and the initial cost of the building """
         cost = self.initial_cost * self.factory.growth_factor**self.count
         return D(math.ceil(cost))
 
     @property
     def cps(self) -> Decimal:
-        """"""
+        """ currently only returns the initial_cps, since upgrades
+        are not implemented yet """
         return self.initial_cps
