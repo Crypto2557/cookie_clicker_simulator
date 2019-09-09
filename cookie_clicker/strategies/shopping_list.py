@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from cookie_clicker.utils import Config
 from cookie_clicker.strategies.base import BaseStrategy
-from cookie_clicker.buildings import BuildingFactory
+from cookie_clicker.clicker_state import ClickerState
 
 
 class ShoppingListStrategy(BaseStrategy):
@@ -32,10 +32,8 @@ class ShoppingListStrategy(BaseStrategy):
         self.purchases = ShoppingListStrategy.load(shopping_list_path)
         self.purchases_current: List[str] = []
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
-                 factory: BuildingFactory) -> Optional[str]:
-
-        if cookies == 15 and cps == 0:
+    def __call__(self, state: ClickerState, duration: Decimal) -> Optional[str]:
+        if state.current_cookies == 15 and state.cps == 0:
             self.purchases_current = self.purchases.copy()
 
         if self.purchases_current:

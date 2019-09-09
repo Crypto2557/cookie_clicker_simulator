@@ -59,10 +59,8 @@ class Simulator:
         self.reset(strategy)
 
         while not self.ready:
-            item_to_buy = strategy(
-                self.state.current_cookies, self.state.cps,
-                self.duration - self.state.current_time,
-                self.factory)  # Determine the item to buy next
+            # Determine the item to buy next
+            item_to_buy = strategy(self.state, self.duration)
 
             if item_to_buy is None:
                 break

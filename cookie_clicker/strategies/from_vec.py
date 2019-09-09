@@ -3,7 +3,7 @@ import copy
 from typing import Optional, Dict
 from decimal import Decimal
 from cookie_clicker.strategies.impl import MonsterStrategy
-from cookie_clicker.buildings.factory import BuildingFactory
+from cookie_clicker.clicker_state import ClickerState
 
 D = Decimal
 
@@ -37,15 +37,12 @@ class StrategyFromVec(MonsterStrategy):
         self.init_dic = dic or StrategyFromVec.__default_dic
         self.reset()
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
-                 factory: BuildingFactory) -> Optional[str]:
+    def __call__(self, state: ClickerState, duration: Decimal) -> Optional[str]:
 
-        if cps == 0.0:
+        if state.cps == 0.0:
             return 'Cursor'
 
-        payback_period_per_item = self.calculate_pp_per_item(factory=factory,
-                                                             cookies=cookies,
-                                                             cps=cps)
+        payback_period_per_item = self.calculate_pp_per_item(state)
 
         for best_option, _ in payback_period_per_item:
             if self.dic[best_option] > 0:

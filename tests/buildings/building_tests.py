@@ -18,7 +18,8 @@ class BaseBuildingTest(unittest.TestCase):
             Cursor=dict(cost=15, cps=0.1),
             Grandma=dict(cost=100, cps=0.1),
         )
-        self.factory = BuildingFactory(info, growth_factor=Config.Defaults.GROWTH_FACTOR)
+        self.factory = BuildingFactory(
+            info, growth_factor=Config.Defaults.GROWTH_FACTOR)
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ from typing import Optional
 from decimal import Decimal
 from cookie_clicker.utils import Registry
 from cookie_clicker.buildings.factory import BuildingFactory
+from cookie_clicker.clicker_state import ClickerState
 
 
 class BaseStrategy(abc.ABC):
@@ -17,8 +18,7 @@ class BaseStrategy(abc.ABC):
         Registry.register_strategy(self)
 
     @abc.abstractmethod
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
-                 factory: BuildingFactory) -> Optional[str]:
+    def __call__(self, state: ClickerState, duration: Decimal) -> Optional[str]:
         """"""
         raise NotImplementedError
 
@@ -38,8 +38,7 @@ class CursorStrategy(BaseStrategy):
     def __init__(self) -> None:
         super(CursorStrategy, self).__init__(name="Cursor", skip=True)
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
-                 factory: BuildingFactory) -> str:
+    def __call__(self, state: ClickerState, duration: Decimal) -> str:
         return "Cursor"
 
 
@@ -53,6 +52,5 @@ class NoneStrategy(BaseStrategy):
     def __init__(self) -> None:
         super(NoneStrategy, self).__init__(name="None", skip=True)
 
-    def __call__(self, cookies: Decimal, cps: Decimal, time_left: Decimal,
-                 factory: BuildingFactory) -> None:
+    def __call__(self, state: ClickerState, duration: Decimal) -> None:
         return None
